@@ -1,6 +1,16 @@
 {
   "name": "multiqr",
   "version": "1.0.0",
+  "author": "Mateus Nascimento",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "homepage": "https://github.com/melosomelo/multiqr",
+  "keywords": [
+    "qr code",
+    "qr code generator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/melosomelo/multiqr"
+  }
 }
