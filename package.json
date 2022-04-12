@@ -2,6 +2,7 @@
   "name": "multiqr",
   "version": "1.0.0",
   "author": "Mateus Nascimento",
+  "description": "A QR code generator that allows for multiple input and output formats",
   "main": "index.js",
   "license": "MIT",
   "homepage": "https://github.com/melosomelo/multiqr",
@@ -12,5 +13,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/melosomelo/multiqr"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
   }
 }
