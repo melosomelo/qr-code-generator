@@ -15,6 +15,10 @@ export default class Polynomial {
     return this.coefficients[0];
   }
 
+  private static clone(f: Polynomial): Polynomial {
+    return new Polynomial(f.deg, [...f.coefficients]);
+  }
+
   static add(f: Polynomial, g: Polynomial): Polynomial {
     const [min, max] = [g, f].sort((a, b) => a.deg - b.deg);
     const coefficients: number[] = new Array(max.deg).fill(0);
@@ -55,20 +59,25 @@ export default class Polynomial {
     f: Polynomial,
     g: Polynomial
   ): { quotient: Polynomial; remainder: Polynomial } {
-    if (g.deg === 0 && g.coefficients[0] === 0) {
+    const divisor = this.clone(g);
+    let dividend = this.clone(f);
+    if (divisor.deg === 0 && divisor.coefficients[0] === 0) {
       throw new Error("Cannot divide by 0!");
     }
     let quotient = new Polynomial(0);
-    const lg = g.coefficients[0];
-    while (f.deg >= g.deg) {
-      const lf = f.coefficients[0];
-      const temp = new Polynomial(f.deg - g.deg, [
+    const lg = divisor.coefficients[0];
+    while (dividend.deg >= divisor.deg) {
+      const lf = dividend.coefficients[0];
+      const temp = new Polynomial(dividend.deg - divisor.deg, [
         lf / lg,
-        ...new Array(Math.max(0, f.deg - g.deg)).fill(0),
+        ...new Array(Math.max(0, dividend.deg - divisor.deg)).fill(0),
       ]);
-      f = Polynomial.subtract(f, Polynomial.multiply(g, temp));
+      dividend = Polynomial.subtract(
+        dividend,
+        Polynomial.multiply(divisor, temp)
+      );
       quotient = Polynomial.add(quotient, temp);
     }
-    return { quotient, remainder: f };
+    return { quotient, remainder: dividend };
   }
 }
