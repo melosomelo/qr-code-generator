@@ -10,8 +10,8 @@ export default class Polynomial {
     return this.coefficients[0];
   }
 
-  add(f: Polynomial): Polynomial {
-    const [min, max] = [this, f].sort((a, b) => a.deg - b.deg);
+  static add(f: Polynomial, g: Polynomial): Polynomial {
+    const [min, max] = [g, f].sort((a, b) => a.deg - b.deg);
     const coefficients: number[] = new Array(max.deg).fill(0);
     const diff = max.deg - min.deg;
     for (let i = 0; i < diff; i++) {
