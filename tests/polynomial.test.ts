@@ -15,6 +15,18 @@ describe("Polynomial class", () => {
       const result = Polynomial.add(f, g);
       expect(result.coefficients).toEqual([5, 4, 0, 3, 17, 42, 8]);
     });
+    it("Result with a zero polynomial", () => {
+      const f = new Polynomial(0);
+      const g = new Polynomial(2, [2, 1, 2]);
+      const result = Polynomial.add(f, g);
+      expect(result.coefficients).toEqual(g.coefficients);
+    });
+    it("Result with two zero polynomials", () => {
+      const g = new Polynomial(0);
+      const f = new Polynomial(0);
+      const result = Polynomial.add(f, g);
+      expect(result.coefficients).toEqual(g.coefficients);
+    });
     it("Degree of result", () => {
       const f = new Polynomial(3, [5, 4, 0, 2]);
       const g = new Polynomial(3, [1, 7, 42, 0]);

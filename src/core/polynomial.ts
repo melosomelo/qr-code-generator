@@ -24,4 +24,13 @@ export default class Polynomial {
     const finalCoefficients = coefficients.slice(firstNonZeroCoefficient);
     return new Polynomial(finalCoefficients.length - 1, finalCoefficients);
   }
+
+  private static inverse(f: Polynomial): Polynomial {
+    const coefficients = f.coefficients.map((coef) => coef * -1);
+    return new Polynomial(f.deg, coefficients);
+  }
+
+  static subtract(f: Polynomial, g: Polynomial): Polynomial {
+    return this.add(f, this.inverse(g));
+  }
 }
