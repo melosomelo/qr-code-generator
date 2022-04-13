@@ -20,6 +20,8 @@ export default class Polynomial {
     for (let i = diff; i <= max.deg; i++) {
       coefficients[i] = max.coefficients[i] + min.coefficients[i - diff];
     }
-    return new Polynomial(coefficients.length - 1, coefficients);
+    const firstNonZeroCoefficient = coefficients.findIndex((el) => el !== 0);
+    const finalCoefficients = coefficients.slice(firstNonZeroCoefficient);
+    return new Polynomial(finalCoefficients.length - 1, finalCoefficients);
   }
 }
