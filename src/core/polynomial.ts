@@ -4,6 +4,11 @@ export default class Polynomial {
   constructor(deg: number, coefficients?: number[]) {
     this.deg = deg;
     this.coefficients = coefficients ?? new Array(deg + 1).fill(0);
+    if (this.coefficients.length !== this.deg + 1) {
+      throw new Error(
+        "Amount of coefficients should be one more that of degree plus one!"
+      );
+    }
   }
 
   public getLeadingCoefficient(): number {
@@ -44,5 +49,26 @@ export default class Polynomial {
     const firstNonZeroCoefficient = coefficients.findIndex((el) => el !== 0);
     const finalCoefficients = coefficients.slice(firstNonZeroCoefficient);
     return new Polynomial(finalCoefficients.length - 1, finalCoefficients);
+  }
+
+  static longDivide(
+    f: Polynomial,
+    g: Polynomial
+  ): { quotient: Polynomial; remainder: Polynomial } {
+    if (g.deg === 0 && g.coefficients[0] === 0) {
+      throw new Error("Cannot divide by 0!");
+    }
+    let quotient = new Polynomial(0);
+    const lg = g.coefficients[0];
+    while (f.deg >= g.deg) {
+      const lf = f.coefficients[0];
+      const temp = new Polynomial(f.deg - g.deg, [
+        lf / lg,
+        ...new Array(Math.max(0, f.deg - g.deg)).fill(0),
+      ]);
+      f = Polynomial.subtract(f, Polynomial.multiply(g, temp));
+      quotient = Polynomial.add(quotient, temp);
+    }
+    return { quotient, remainder: f };
   }
 }
