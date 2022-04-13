@@ -2,7 +2,7 @@ import Polynomial from "../src/core/polynomial";
 import { describe, it, expect } from "@jest/globals";
 
 describe("Polynomial class", () => {
-  describe("Polynomial addition", () => {
+  describe("add()", () => {
     it("Result with operands of equal degree", () => {
       const f = new Polynomial(3, [5, 4, 0, 2]);
       const g = new Polynomial(3, [1, 7, 42, 0]);
@@ -38,6 +38,38 @@ describe("Polynomial class", () => {
       const g = new Polynomial(5, [-5, 1, 4, 2, 6, 10]);
       const result = Polynomial.add(f, g);
       expect(result.deg).toBe(f.deg - 1);
+    });
+  });
+  describe("multiply()", () => {
+    it("Result", () => {
+      const f = new Polynomial(2, [4, 5, 1]);
+      const g = new Polynomial(2, [1, 3, 1]);
+      const result = Polynomial.multiply(f, g);
+      expect(result.coefficients).toEqual([4, 17, 20, 8, 1]);
+    });
+    it("Result when one of the operands is 0", () => {
+      const f = new Polynomial(0);
+      const g = new Polynomial(2, [1, 3, 1]);
+      const result = Polynomial.multiply(f, g);
+      expect(result.coefficients).toEqual([0]);
+    });
+    it("Result when one of the operands is 1", () => {
+      const f = new Polynomial(0, [1]);
+      const g = new Polynomial(2, [1, 3, 1]);
+      const result = Polynomial.multiply(f, g);
+      expect(result.coefficients).toEqual(g.coefficients);
+    });
+    it("Degree", () => {
+      const f = new Polynomial(2, [4, 5, 1]);
+      const g = new Polynomial(2, [1, 3, 1]);
+      const result = Polynomial.multiply(f, g);
+      expect(result.deg).toBe(f.deg + g.deg);
+    });
+    it("Degree when of the operands is 0", () => {
+      const f = new Polynomial(2, [4, 5, 1]);
+      const g = new Polynomial(0);
+      const result = Polynomial.multiply(f, g);
+      expect(result.deg).toBe(0);
     });
   });
 });

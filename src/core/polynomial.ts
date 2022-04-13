@@ -25,12 +25,24 @@ export default class Polynomial {
     return new Polynomial(finalCoefficients.length - 1, finalCoefficients);
   }
 
-  private static inverse(f: Polynomial): Polynomial {
+  private static invert(f: Polynomial): Polynomial {
     const coefficients = f.coefficients.map((coef) => coef * -1);
     return new Polynomial(f.deg, coefficients);
   }
 
   static subtract(f: Polynomial, g: Polynomial): Polynomial {
-    return this.add(f, this.inverse(g));
+    return this.add(f, this.invert(g));
+  }
+
+  static multiply(f: Polynomial, g: Polynomial): Polynomial {
+    const coefficients: number[] = new Array(f.deg + g.deg + 1).fill(0);
+    for (let i = 0; i <= f.deg; i++) {
+      for (let j = 0; j <= g.deg; j++) {
+        coefficients[i + j] += f.coefficients[i] * g.coefficients[j];
+      }
+    }
+    const firstNonZeroCoefficient = coefficients.findIndex((el) => el !== 0);
+    const finalCoefficients = coefficients.slice(firstNonZeroCoefficient);
+    return new Polynomial(finalCoefficients.length - 1, finalCoefficients);
   }
 }
