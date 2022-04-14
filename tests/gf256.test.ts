@@ -28,8 +28,14 @@ describe("GF256", () => {
     it("division by 0", () => {
       expect(() => GF256.divide(10, 0)).toThrow();
     });
-    it("result", () => {
-      expect(GF256.divide(23, 14)).toBe(93);
+    it("division by 1", () => {
+      expect(GF256.divide(33, 1)).toBe(33);
+    });
+    it("1", () => {
+      expect(GF256.divide(10, 3)).toBe(6);
+    });
+    it("2", () => {
+      expect(GF256.divide(45, 12)).toBe(207);
     });
   });
 });
