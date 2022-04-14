@@ -71,7 +71,7 @@ export default class Polynomial {
     while (dividend.deg >= divisor.deg) {
       const lf = dividend.coefficients[0];
       const temp = new Polynomial(dividend.deg - divisor.deg, [
-        lf / lg,
+        GF256.divide(lf, lg),
         ...new Array(Math.max(0, dividend.deg - divisor.deg)).fill(0),
       ]);
       dividend = Polynomial.subtract(

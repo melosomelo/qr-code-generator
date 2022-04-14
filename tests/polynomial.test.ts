@@ -72,14 +72,13 @@ describe("Polynomial class", () => {
       expect(result.deg).toBe(0);
     });
   });
-  /*
   describe("longDivide()", () => {
     it("Throw error when divisor is 0", () => {
       const f = new Polynomial(4, [1, 0, 6, 0, 2]);
       const g = new Polynomial(0);
       expect(() => Polynomial.longDivide(f, g)).toThrow();
     });
-    it("Result when divided is 0", () => {
+    it("Result when dividend is 0", () => {
       const f = new Polynomial(0);
       const g = new Polynomial(2, [1, 0, 5]);
       const { quotient } = Polynomial.longDivide(f, g);
@@ -90,11 +89,11 @@ describe("Polynomial class", () => {
         const f = new Polynomial(4, [1, 0, 6, 0, 2]);
         const g = new Polynomial(2, [1, 0, 5]);
         const { quotient } = Polynomial.longDivide(f, g);
-        expect(quotient.coefficients).toEqual([1, 0, 1]);
+        expect(quotient.coefficients).toEqual([1, 0, 3]);
       });
       it("2", () => {
         const f = new Polynomial(3, [1, 1, 0, 0]);
-        const g = new Polynomial(2, [1, 1, -2]);
+        const g = new Polynomial(2, [1, 1, 2]);
         const { quotient } = Polynomial.longDivide(f, g);
         expect(quotient.coefficients).toEqual([1, 0]);
       });
@@ -102,7 +101,7 @@ describe("Polynomial class", () => {
         const f = new Polynomial(2, [2, 5, 18]);
         const g = new Polynomial(1, [1, 4]);
         const { quotient } = Polynomial.longDivide(f, g);
-        expect(quotient.coefficients).toEqual([2, -3]);
+        expect(quotient.coefficients).toEqual([2, 13]);
       });
     });
     describe("remainder results", () => {
@@ -110,21 +109,20 @@ describe("Polynomial class", () => {
         const f = new Polynomial(4, [1, 0, 6, 0, 2]);
         const g = new Polynomial(2, [1, 0, 5]);
         const { remainder } = Polynomial.longDivide(f, g);
-        expect(remainder.coefficients).toEqual([-3]);
+        expect(remainder.coefficients).toEqual([13]);
       });
       it("2", () => {
         const f = new Polynomial(3, [1, 1, 0, 0]);
-        const g = new Polynomial(2, [1, 1, -2]);
+        const g = new Polynomial(2, [1, 1, 2]);
         const { remainder } = Polynomial.longDivide(f, g);
         expect(remainder.coefficients).toEqual([2, 0]);
       });
       it("3", () => {
-        const f = new Polynomial(2, [2, 5, -18]);
+        const f = new Polynomial(2, [2, 5, 18]);
         const g = new Polynomial(1, [1, 4]);
         const { remainder } = Polynomial.longDivide(f, g);
-        expect(remainder.coefficients).toEqual([-6]);
+        expect(remainder.coefficients).toEqual([38]);
       });
     });
   });
-  */
 });
