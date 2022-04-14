@@ -46,6 +46,7 @@ export default class Polynomial {
   static multiply(f: Polynomial, g: Polynomial): Polynomial {
     const coefficients: number[] = new Array(f.deg + g.deg + 1).fill(0);
     for (let i = 0; i <= f.deg; i++) {
+      if (f.coefficients[i] === 0) continue;
       for (let j = 0; j <= g.deg; j++) {
         coefficients[i + j] += f.coefficients[i] * g.coefficients[j];
       }

@@ -21,7 +21,15 @@ describe("GF256", () => {
       expect(GF256.multiply(5, 167)).toBe(1);
     });
     it("one of operands is 0", () => {
-      expect(GF256.multiply(0, 10)).toEqual(0);
+      expect(GF256.multiply(0, 10)).toBe(0);
+    });
+  });
+  describe("division", () => {
+    it("division by 0", () => {
+      expect(() => GF256.divide(10, 0)).toThrow();
+    });
+    it("result", () => {
+      expect(GF256.divide(23, 14)).toBe(93);
     });
   });
 });

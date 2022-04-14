@@ -12,7 +12,9 @@ const GF: GF256 = {
     return this.antilog[(this.log[a] + this.log[b]) % 255];
   },
   divide(a: number, b: number) {
-    return this.antilog[(this.log[a] + this.log[255 - b]) % 255];
+    if (b === 0) throw new Error("Cannot perform division by 0!");
+    const bInverse = this.antilog[255 - this.log[b]];
+    return this.antilog[(this.log[a] + this.log[bInverse]) % 255];
   },
   log: {},
   antilog: {},
