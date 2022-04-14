@@ -1,9 +1,10 @@
 import type { GF256 } from "../types";
 
+// An object representing the GF(256) and the operations
+// that can be performed in it
 const GF: GF256 = {
   add(a: number, b: number) {
-    const temp = a + b;
-    return temp >= 256 ? temp ^ 285 : temp;
+    return a ^ b;
   },
   multiply(a: number, b: number) {
     if (a === 0 || b === 0) {

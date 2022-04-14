@@ -1,3 +1,6 @@
+import GF256 from "./gf256";
+
+// A polynomial whose operations are defined by those of GF(256)
 export default class Polynomial {
   public readonly deg: number;
   public readonly coefficients: number[];
@@ -9,10 +12,6 @@ export default class Polynomial {
         "Amount of coefficients should be one more that of degree plus one!"
       );
     }
-  }
-
-  public getLeadingCoefficient(): number {
-    return this.coefficients[0];
   }
 
   private static clone(f: Polynomial): Polynomial {
@@ -27,20 +26,19 @@ export default class Polynomial {
       coefficients[i] = max.coefficients[i];
     }
     for (let i = diff; i <= max.deg; i++) {
-      coefficients[i] = max.coefficients[i] + min.coefficients[i - diff];
+      coefficients[i] = GF256.add(
+        max.coefficients[i],
+        min.coefficients[i - diff]
+      );
     }
     const firstNonZeroCoefficient = coefficients.findIndex((el) => el !== 0);
     const finalCoefficients = coefficients.slice(firstNonZeroCoefficient);
     return new Polynomial(finalCoefficients.length - 1, finalCoefficients);
   }
 
-  private static invert(f: Polynomial): Polynomial {
-    const coefficients = f.coefficients.map((coef) => coef * -1);
-    return new Polynomial(f.deg, coefficients);
-  }
-
+  // addition and subtraction in GF(256) are equal
   static subtract(f: Polynomial, g: Polynomial): Polynomial {
-    return this.add(f, this.invert(g));
+    return this.add(f, g);
   }
 
   static multiply(f: Polynomial, g: Polynomial): Polynomial {
@@ -48,7 +46,10 @@ export default class Polynomial {
     for (let i = 0; i <= f.deg; i++) {
       if (f.coefficients[i] === 0) continue;
       for (let j = 0; j <= g.deg; j++) {
-        coefficients[i + j] += f.coefficients[i] * g.coefficients[j];
+        coefficients[i + j] = GF256.multiply(
+          f.coefficients[i],
+          g.coefficients[j]
+        );
       }
     }
     const firstNonZeroCoefficient = coefficients.findIndex((el) => el !== 0);

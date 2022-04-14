@@ -3,11 +3,17 @@ import { describe, it, expect } from "@jest/globals";
 
 describe("GF256", () => {
   describe("addition", () => {
-    it("result less than 256", () => {
-      expect(GF256.add(3, 2)).toBe(5);
+    it("addition with 0", () => {
+      expect(GF256.add(100, 0)).toBe(100);
     });
-    it("result greater than 256", () => {
-      expect(GF256.add(230, 120)).toBe(67);
+    it("addition with equal operands", () => {
+      expect(GF256.add(25, 25)).toBe(0);
+    });
+    it("1", () => {
+      expect(GF256.add(3, 2)).toBe(1);
+    });
+    it("2", () => {
+      expect(GF256.add(42, 20)).toBe(62);
     });
   });
   describe("multiplication", () => {
