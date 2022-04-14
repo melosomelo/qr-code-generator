@@ -46,9 +46,9 @@ export default class Polynomial {
     for (let i = 0; i <= f.deg; i++) {
       if (f.coefficients[i] === 0) continue;
       for (let j = 0; j <= g.deg; j++) {
-        coefficients[i + j] = GF256.multiply(
-          f.coefficients[i],
-          g.coefficients[j]
+        coefficients[i + j] = GF256.add(
+          coefficients[i + j],
+          GF256.multiply(f.coefficients[i], g.coefficients[j])
         );
       }
     }
