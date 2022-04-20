@@ -30,7 +30,6 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   const mode: EncodingMode = options?.mode ?? analyzeData(buffer);
   const errorLevel: ErrorCorrectionDetectionLevel =
     options?.errorCorrectionDetectionLevel ?? "L";
-
   return new QRCode(buffer, {
     mode,
     errorCorrectionDetectionLevel: errorLevel,

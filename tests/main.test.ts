@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { analyzeData } from "../src/core/multiqr";
+import { analyzeData } from "../src/core/main";
 import { describe, it, expect } from "@jest/globals";
 
 describe("Main steps tests", () => {

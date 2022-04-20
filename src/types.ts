@@ -19,6 +19,7 @@ export type EncodingMode = "numeric" | "alphanumeric";
 export interface GenerateQRCodeOptions {
   mode?: EncodingMode;
   errorCorrectionDetectionLevel?: ErrorCorrectionDetectionLevel;
+  version?: number;
 }
 
 export type GenerateQRCode = (
