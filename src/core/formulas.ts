@@ -30,7 +30,7 @@ function numberOfAlignmentPatternsIntersectingTimingPatterns(
 export function numberOfFunctionPatternModules(version: number): number {
   const l = length(version);
   const finderPatternModules = 7 * 7 * 3;
-  const separatorModules = 16 * 3;
+  const separatorModules = 15 * 3;
   const timingPatternModules = (l - 8 * 2) * 2;
   // The alignment patterns intersect with timing patterns in some
   // version, so we need to make sure they're not counted twice
@@ -38,6 +38,7 @@ export function numberOfFunctionPatternModules(version: number): number {
     25 *
     (numberOfAlignmentPatterns(version) -
       numberOfAlignmentPatternsIntersectingTimingPatterns(version));
+  console.log(alignmentPatternModules);
   return (
     finderPatternModules +
     separatorModules +
@@ -46,6 +47,7 @@ export function numberOfFunctionPatternModules(version: number): number {
   );
 }
 
+// THIS IS WRONG, IT'S NOT ACCOUNTING FOR FORMAT AND VERSION INFORMATION MODULES
 export function numberOfDataModules(version: number): number {
   return numberOfModules(version) - numberOfFunctionPatternModules(version);
 }
