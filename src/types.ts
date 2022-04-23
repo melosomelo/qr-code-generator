@@ -26,3 +26,7 @@ export type GenerateQRCode = (
   data: string,
   options?: GenerateQRCodeOptions
 ) => QRCode;
+
+export interface Encoder {
+  encode: (data: string) => string;
+}
