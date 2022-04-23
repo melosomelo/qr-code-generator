@@ -10,6 +10,8 @@ describe("utility functions tests", () => {
       [8, 5, "01000"],
       [0, 10, "0000000000"],
       [10, undefined, "1010"],
+      [45, undefined, "101101"],
+      [1003, undefined, "1111101011"],
     ])(`%#`, (n, digits, result) =>
       expect(toBinaryString(n, digits)).toBe(result)
     );
