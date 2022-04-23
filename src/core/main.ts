@@ -1,13 +1,10 @@
 /* Functions that represent the main steps of generating a QRCode, namely: 
-  1. Data analysis - Analyze the data in order to check the best encoding mode (if none was specified) 
-*/
+  1. Data analysis - Analyze the data in order to check the best encoding mode (if none was specified) */
 
 import QRCode from "./qrcode";
-import type {
-  ErrorCorrectionDetectionLevel,
-  EncodingMode,
-  GenerateQRCode,
-} from "../types";
+import MODE_INDICATORS from "../util/modeIndicators";
+import toBinaryString from "../util/toBinaryString";
+import type { EncodingMode, GenerateQRCode } from "../types";
 
 function isNumericChar(byte: number): boolean {
   return byte >= 48 && byte <= 57;
@@ -26,13 +23,14 @@ export function analyzeData(data: Buffer): EncodingMode {
 
 const generateQRCode: GenerateQRCode = (data, options) => {
   // so far, only support for ISO/IEC 8859-1 (latin1)
-  const buffer = Buffer.from(data, "latin1");
-  const mode: EncodingMode = options?.mode ?? analyzeData(buffer);
-  const errorLevel: ErrorCorrectionDetectionLevel =
-    options?.errorCorrectionDetectionLevel ?? "L";
-  return new QRCode(buffer, {
+  const inputBuffer = Buffer.from(data, "latin1");
+  const mode: EncodingMode = options?.mode ?? analyzeData(inputBuffer);
+  const modeIndicator = MODE_INDICATORS[mode];
+  // will need to modify later so that length of binary string is correct
+  let characterCountIndicator = toBinaryString(data.length);
+  return new QRCode(inputBuffer, {
     mode,
-    errorCorrectionDetectionLevel: errorLevel,
+    errorCorrectionDetectionLevel: "H",
     version: 40,
   });
 };
