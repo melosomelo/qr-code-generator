@@ -1,5 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
 import NumericEncoder from "../src/core/encoders/numeric";
+import AlphanumericEncoder from "../src/core/encoders/alphanumeric";
 
 describe("Encoders", () => {
   describe("Numeric encoder", () => {
@@ -15,6 +16,14 @@ describe("Encoders", () => {
       ["4915738", "011110101110001111011000"],
     ])("Encoding %s", (data, expectedResult) =>
       expect(NumericEncoder.encode(data)).toBe(expectedResult)
+    );
+  });
+  describe("Alphanumeric encoder", () => {
+    it.each([["ac-42", "0011100111011100111001000010"]])(
+      "Encoding %s",
+      (data, expectedResult) => {
+        expect(AlphanumericEncoder.encode(data)).toBe(expectedResult);
+      }
     );
   });
 });

@@ -13,7 +13,8 @@ const AlphanumEncoder: AlphanumericEncoder = {
         // if not, then multiply the first char's value by 45, add the second char's value
         // and then convert it to an 11 bit binary string
         result += toBinaryString(
-          this.encodingTable[i * 2] * 45 + this.encodingTable[i * 2 + 1],
+          this.encodingTable[upperCaseData[i * 2]] * 45 +
+            this.encodingTable[upperCaseData[i * 2 + 1]],
           11
         );
       }
