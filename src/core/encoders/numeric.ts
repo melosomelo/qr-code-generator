@@ -1,7 +1,7 @@
-import type { Encoder } from "../../types";
+import type { NumericEncoder } from "../../types";
 import toBinaryString from "../../util/toBinaryString";
 
-const NumericEncoder: Encoder = {
+const NumEncoder: NumericEncoder = {
   encode(data: string) {
     let result = "";
     for (let i = 0; i < Math.ceil(data.length / 3); i++) {
@@ -13,4 +13,4 @@ const NumericEncoder: Encoder = {
   },
 };
 
-export default NumericEncoder;
+export default NumEncoder;

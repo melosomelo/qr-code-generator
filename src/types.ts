@@ -30,3 +30,11 @@ export type GenerateQRCode = (
 export interface Encoder {
   encode: (data: string) => string;
 }
+
+export interface NumericEncoder extends Encoder {}
+
+export interface AlphanumericEncoder extends Encoder {
+  encodingTable: {
+    [key: string]: number;
+  };
+}
