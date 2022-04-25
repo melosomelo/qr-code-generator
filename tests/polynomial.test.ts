@@ -1,4 +1,4 @@
-import Polynomial from "../src/core/polynomial";
+import Polynomial from "../src/core/math/polynomial";
 import { describe, it, expect } from "@jest/globals";
 
 describe("Polynomial class", () => {

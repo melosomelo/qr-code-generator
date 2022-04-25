@@ -20,7 +20,7 @@ describe("Encoders", () => {
   });
   describe("Alphanumeric encoder", () => {
     it.each([["ac-42", "0011100111011100111001000010"]])(
-      "Encoding %s",
+      "Encoding '%s'",
       (data, expectedResult) => {
         expect(AlphanumericEncoder.encode(data)).toBe(expectedResult);
       }

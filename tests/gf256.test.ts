@@ -1,4 +1,4 @@
-import GF256 from "../src/core/gf256";
+import GF256 from "../src/core/math/gf256";
 import { describe, it, expect } from "@jest/globals";
 
 describe("GF256", () => {

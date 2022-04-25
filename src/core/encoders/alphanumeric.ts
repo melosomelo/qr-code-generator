@@ -1,5 +1,6 @@
 import type { AlphanumericEncoder } from "../../types";
 import toBinaryString from "../../util/toBinaryString";
+import EncodingError from "./EncodingError";
 
 const AlphanumEncoder: AlphanumericEncoder = {
   encode(data: string) {
@@ -8,13 +9,13 @@ const AlphanumEncoder: AlphanumericEncoder = {
     for (let i = 0; i < Math.ceil(data.length / 2); i++) {
       // if there is only one character remaining, encode it as a 6 bit number
       if (i * 2 === data.length - 1) {
-        result += toBinaryString(this.encodingTable[upperCaseData[i * 2]], 6);
+        result += toBinaryString(this.getEncoded(upperCaseData[i * 2]), 6);
       } else {
         // if not, then multiply the first char's value by 45, add the second char's value
         // and then convert it to an 11 bit binary string
         result += toBinaryString(
-          this.encodingTable[upperCaseData[i * 2]] * 45 +
-            this.encodingTable[upperCaseData[i * 2 + 1]],
+          this.getEncoded(upperCaseData[i * 2]) * 45 +
+            this.getEncoded(upperCaseData[i * 2 + 1]),
           11
         );
       }
@@ -67,6 +68,12 @@ const AlphanumEncoder: AlphanumericEncoder = {
     ".": 42,
     "/": 43,
     ":": 44,
+  },
+  getEncoded(char: string): number {
+    if (this.encodingTable[char] === undefined) {
+      throw new EncodingError(`Could not encode the char '${char}'`);
+    }
+    return this.encodingTable[char];
   },
 };
 

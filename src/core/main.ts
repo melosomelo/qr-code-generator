@@ -3,7 +3,6 @@
 
 import QRCode from "./qrcode";
 import MODE_INDICATORS from "../util/modeIndicators";
-import toBinaryString from "../util/toBinaryString";
 import type { EncodingMode, GenerateQRCode } from "../types";
 
 function isNumericChar(byte: number): boolean {
@@ -22,12 +21,10 @@ export function analyzeData(data: Buffer): EncodingMode {
 }
 
 const generateQRCode: GenerateQRCode = (data, options) => {
-  // so far, only support for ISO/IEC 8859-1 (latin1)
+  // So far, only support for ISO/IEC 8859-1 (latin1).
   const inputBuffer = Buffer.from(data, "latin1");
   const mode: EncodingMode = options?.mode ?? analyzeData(inputBuffer);
   const modeIndicator = MODE_INDICATORS[mode];
-  // will need to modify later so that length of binary string is correct
-  let characterCountIndicator = toBinaryString(data.length);
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",

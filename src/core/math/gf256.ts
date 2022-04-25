@@ -1,4 +1,4 @@
-import type { GF256 } from "../types";
+import type { GF256 } from "../../types";
 
 // An object representing the GF(256) and the operations
 // that can be performed in it

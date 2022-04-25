@@ -37,4 +37,5 @@ export interface AlphanumericEncoder extends Encoder {
   encodingTable: {
     [key: string]: number;
   };
+  getEncoded: (char: string) => number;
 }
