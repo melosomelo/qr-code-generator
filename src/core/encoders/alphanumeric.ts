@@ -1,6 +1,6 @@
 import type { AlphanumericEncoder } from "../../types";
 import toBinaryString from "../../util/toBinaryString";
-import EncodingError from "./EncodingError";
+import EncodingError from "./encodingError";
 
 const AlphanumEncoder: AlphanumericEncoder = {
   encode(data: string) {

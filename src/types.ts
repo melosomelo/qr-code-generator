@@ -39,3 +39,20 @@ export interface AlphanumericEncoder extends Encoder {
   };
   getEncoded: (char: string) => number;
 }
+
+export interface ECB {
+  totalCodewords: number;
+  dataCodewords: number;
+}
+interface VersionInfo {
+  version: number;
+  ecInfo: {
+    [key in ErrorCorrectionDetectionLevel]: {
+      ECBs: ECB[];
+    };
+  };
+}
+
+export interface Version {
+  versions: VersionInfo[];
+}
