@@ -3,7 +3,11 @@
 
 import QRCode from "./qrcode";
 import MODE_INDICATORS from "../util/modeIndicators";
-import type { EncodingMode, GenerateQRCode } from "../types";
+import type {
+  EncodingMode,
+  ErrorCorrectionDetectionLevel,
+  GenerateQRCode,
+} from "../types";
 
 function isNumericChar(byte: number): boolean {
   return byte >= 48 && byte <= 57;
@@ -25,6 +29,8 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   const inputBuffer = Buffer.from(data, "latin1");
   const mode: EncodingMode = options?.mode ?? analyzeData(inputBuffer);
   const modeIndicator = MODE_INDICATORS[mode];
+  const ecLevel: ErrorCorrectionDetectionLevel =
+    options?.errorCorrectionDetectionLevel ?? "M";
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",
