@@ -630,6 +630,108 @@ const VersionObj: Version = {
         },
       },
     },
+    {
+      version: 21,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(4, 144, 116), ...makeECBs(4, 145, 117)],
+        },
+        M: {
+          ECBs: [...makeECBs(17, 68, 42)],
+        },
+        Q: {
+          ECBs: [...makeECBs(17, 50, 22), ...makeECBs(6, 51, 23)],
+        },
+        H: {
+          ECBs: [...makeECBs(19, 46, 16), ...makeECBs(6, 47, 17)],
+        },
+      },
+    },
+    {
+      version: 22,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(2, 139, 111), ...makeECBs(7, 140, 112)],
+        },
+        M: {
+          ECBs: [...makeECBs(17, 74, 46)],
+        },
+        Q: {
+          ECBs: [...makeECBs(7, 54, 24), ...makeECBs(16, 55, 25)],
+        },
+        H: {
+          ECBs: [...makeECBs(34, 37, 12)],
+        },
+      },
+    },
+    {
+      version: 23,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(4, 151, 121), ...makeECBs(5, 152, 122)],
+        },
+        M: {
+          ECBs: [...makeECBs(4, 75, 47), ...makeECBs(14, 76, 48)],
+        },
+        Q: {
+          ECBs: [...makeECBs(11, 54, 24), ...makeECBs(14, 55, 25)],
+        },
+        H: {
+          ECBs: [...makeECBs(16, 45, 15), ...makeECBs(14, 46, 16)],
+        },
+      },
+    },
+    {
+      version: 24,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(6, 147, 117), ...makeECBs(4, 148, 118)],
+        },
+        M: {
+          ECBs: [...makeECBs(6, 73, 45), ...makeECBs(14, 74, 46)],
+        },
+        Q: {
+          ECBs: [...makeECBs(11, 54, 24), ...makeECBs(16, 55, 25)],
+        },
+        H: {
+          ECBs: [...makeECBs(30, 46, 16), ...makeECBs(2, 47, 17)],
+        },
+      },
+    },
+    {
+      version: 25,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(8, 132, 106), ...makeECBs(4, 133, 107)],
+        },
+        M: {
+          ECBs: [...makeECBs(8, 75, 47), ...makeECBs(13, 76, 48)],
+        },
+        Q: {
+          ECBs: [...makeECBs(7, 54, 24), ...makeECBs(22, 55, 25)],
+        },
+        H: {
+          ECBs: [...makeECBs(22, 45, 15), ...makeECBs(13, 46, 16)],
+        },
+      },
+    },
+    {
+      version: 26,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(10, 142, 114), ...makeECBs(2, 143, 115)],
+        },
+        M: {
+          ECBs: [...makeECBs(19, 74, 46), ...makeECBs(4, 75, 47)],
+        },
+        Q: {
+          ECBs: [...makeECBs(28, 50, 22), ...makeECBs(6, 51, 23)],
+        },
+        H: {
+          ECBs: [...makeECBs(33, 46, 16), ...makeECBs(4, 47, 17)],
+        },
+      },
+    },
   ],
 };
 

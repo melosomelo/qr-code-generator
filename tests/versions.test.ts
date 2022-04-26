@@ -23,7 +23,7 @@ describe("Testing the Version object", () => {
           )
         )
     )(
-      "Testing equality of sum of size of ECBs of different ec levels for version %#",
+      "Testing equality of sum of size of ECBs of different ec levels for version (%# + 1)",
       (l, m, q, h) => {
         expect(l).toBe(m);
         expect(m).toBe(q);
