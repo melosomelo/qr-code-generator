@@ -732,6 +732,74 @@ const VersionObj: Version = {
         },
       },
     },
+    {
+      version: 27,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(8, 152, 122), ...makeECBs(4, 153, 123)],
+        },
+        M: {
+          ECBs: [...makeECBs(22, 73, 45), ...makeECBs(3, 74, 46)],
+        },
+        Q: {
+          ECBs: [...makeECBs(8, 53, 23), ...makeECBs(26, 54, 24)],
+        },
+        H: {
+          ECBs: [...makeECBs(12, 45, 15), ...makeECBs(28, 46, 16)],
+        },
+      },
+    },
+    {
+      version: 28,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(3, 147, 117), ...makeECBs(10, 148, 118)],
+        },
+        M: {
+          ECBs: [...makeECBs(3, 73, 45), ...makeECBs(23, 74, 46)],
+        },
+        Q: {
+          ECBs: [...makeECBs(4, 54, 24), ...makeECBs(31, 55, 25)],
+        },
+        H: {
+          ECBs: [...makeECBs(11, 45, 15), ...makeECBs(31, 46, 16)],
+        },
+      },
+    },
+    {
+      version: 29,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(7, 146, 116), ...makeECBs(7, 147, 117)],
+        },
+        M: {
+          ECBs: [...makeECBs(21, 73, 45), ...makeECBs(7, 74, 46)],
+        },
+        Q: {
+          ECBs: [makeECB(53, 23), ...makeECBs(37, 54, 24)],
+        },
+        H: {
+          ECBs: [...makeECBs(19, 45, 15), ...makeECBs(26, 46, 16)],
+        },
+      },
+    },
+    {
+      version: 30,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(5, 145, 115), ...makeECBs(10, 146, 116)],
+        },
+        M: {
+          ECBs: [...makeECBs(19, 75, 47), ...makeECBs(10, 76, 48)],
+        },
+        Q: {
+          ECBs: [...makeECBs(15, 54, 24), ...makeECBs(25, 55, 25)],
+        },
+        H: {
+          ECBs: [...makeECBs(23, 45, 15), ...makeECBs(25, 46, 16)],
+        },
+      },
+    },
   ],
 };
 
