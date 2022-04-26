@@ -800,6 +800,57 @@ const VersionObj: Version = {
         },
       },
     },
+    {
+      version: 31,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(13, 145, 115), ...makeECBs(3, 146, 116)],
+        },
+        M: {
+          ECBs: [...makeECBs(2, 74, 46), ...makeECBs(29, 75, 47)],
+        },
+        Q: {
+          ECBs: [...makeECBs(42, 54, 24), ...makeECBs(1, 55, 25)],
+        },
+        H: {
+          ECBs: [...makeECBs(23, 45, 15), ...makeECBs(28, 46, 16)],
+        },
+      },
+    },
+    {
+      version: 32,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(17, 145, 115)],
+        },
+        M: {
+          ECBs: [...makeECBs(10, 74, 46), ...makeECBs(23, 75, 47)],
+        },
+        Q: {
+          ECBs: [...makeECBs(10, 54, 24), ...makeECBs(35, 55, 25)],
+        },
+        H: {
+          ECBs: [...makeECBs(19, 45, 15), ...makeECBs(35, 46, 16)],
+        },
+      },
+    },
+    {
+      version: 33,
+      ecInfo: {
+        L: {
+          ECBs: [...makeECBs(17, 145, 115), makeECB(146, 116)],
+        },
+        M: {
+          ECBs: [...makeECBs(14, 74, 46), ...makeECBs(21, 75, 47)],
+        },
+        Q: {
+          ECBs: [...makeECBs(29, 54, 24), ...makeECBs(19, 55, 25)],
+        },
+        H: {
+          ECBs: [...makeECBs(11, 45, 15), ...makeECBs(46, 46, 16)],
+        },
+      },
+    },
   ],
 };
 
