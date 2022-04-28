@@ -971,6 +971,82 @@ const VersionObj: Version = {
       },
     },
   ],
+  willFit(/* dataLength, version, mode, ecLevel */) {
+    // Mode indicator is always 4 bits for QR Codes.
+    /*
+    const modeIndicatorLength = 4;
+    const characterCountIndicatorLength = this.getCharacterCountIndicatorLength(
+      version,
+      mode
+    );
+    const errorCorrectionBits = this.versions[version - 1].ecInfo[
+      ecLevel
+    ].ECBs.reduce<number>(
+      (prev, current) =>
+        prev + (current.totalCodewords - current.dataCodewords) * 8,
+      0
+    );
+    */
+    return false;
+  },
+  characterCountIndicatorLength: {
+    alphanumeric: [9, 11, 13],
+    numeric: [10, 12, 14],
+  },
+  getCharacterCountIndicatorLength(version, mode) {
+    const possibleValues = this.characterCountIndicatorLength[mode];
+    if (version >= 1 && version <= 9) return possibleValues[0];
+    else if (version >= 10 && version <= 26) return possibleValues[1];
+    return possibleValues[2];
+  },
+  amountFunctionPatternModules(version) {
+    const l = this.length(version);
+    const finderPatternModules = 7 * 7 * 3;
+    const separatorModules = 15 * 3;
+    const timingPatternModules = (l - 8 * 2) * 2;
+    // The alignment patterns intersect with timing patterns in
+    // some version, so we need to make sure they're not counted twice.
+    const alignmentPatternModules =
+      25 * this.amountAlignmentPatterns(version) -
+      5 * this.amountAlignmentPatternsIntersectingTimingPatterns(version);
+    return (
+      finderPatternModules +
+      separatorModules +
+      timingPatternModules +
+      alignmentPatternModules
+    );
+  },
+  amountAlignmentPatternsIntersectingTimingPatterns(version) {
+    if (version === 1) return 0;
+    return Math.floor(version / 7) * 2;
+  },
+  amountDataModules(version) {
+    return (
+      this.amountTotalModules(version) -
+      (this.amountFunctionPatternModules(version) +
+        this.amountInfoModules(version))
+    );
+  },
+  amountAlignmentPatterns(version) {
+    if (version === 1) return 0;
+    if (version >= 2 && version < 7) return 1;
+    if (version >= 7 && version < 14) return 6;
+    if (version >= 14 && version < 21) return 13;
+    if (version >= 21 && version < 28) return 22;
+    if (version >= 28 && version < 35) return 33;
+    return 46;
+  },
+  amountInfoModules(version) {
+    if (version >= 1 && version < 7) return 31;
+    return 67;
+  },
+  amountTotalModules(version) {
+    const l = this.length(version);
+    return l * l;
+  },
+  length(version) {
+    return 21 + 4 * (version - 1);
+  },
 };
 
 export default VersionObj;

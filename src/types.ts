@@ -55,4 +55,26 @@ interface VersionInfo {
 
 export interface Version {
   versions: VersionInfo[];
+  willFit: (
+    dataLength: number,
+    version: number,
+    mode: EncodingMode,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ) => boolean;
+  characterCountIndicatorLength: {
+    [m in EncodingMode]: [number, number, number];
+  };
+  getCharacterCountIndicatorLength: (
+    version: number,
+    mode: EncodingMode
+  ) => number;
+  amountInfoModules: (version: number) => number;
+  amountFunctionPatternModules: (version: number) => number;
+  amountDataModules: (version: number) => number;
+  amountTotalModules: (version: number) => number;
+  amountAlignmentPatterns: (version: number) => number;
+  amountAlignmentPatternsIntersectingTimingPatterns: (
+    version: number
+  ) => number;
+  length: (version: number) => number;
 }

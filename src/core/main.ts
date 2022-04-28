@@ -8,6 +8,9 @@ import type {
   ErrorCorrectionDetectionLevel,
   GenerateQRCode,
 } from "../types";
+import assert from "../util/assert";
+import Version from "../core/versions";
+import encoders from "../core/encoders";
 
 function isNumericChar(byte: number): boolean {
   return byte >= 48 && byte <= 57;
@@ -31,6 +34,18 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   const modeIndicator = MODE_INDICATORS[mode];
   const ecLevel: ErrorCorrectionDetectionLevel =
     options?.errorCorrectionDetectionLevel ?? "M";
+  const encoder = encoders[mode];
+  const encodedData = encoder.encode(data);
+  // Check to see if provided version + ecLevel is enough to store the data.
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  if (options?.version) {
+    assert(
+      Version.willFit(options?.version, ecLevel),
+      "Data is too big for selected version!"
+    );
+  } else {
+    // If no version was provided, calculate the minimal version that works.
+  }
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",
