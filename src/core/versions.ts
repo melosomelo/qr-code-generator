@@ -971,9 +971,8 @@ const VersionObj: Version = {
       },
     },
   ],
-  willFit(/* dataLength, version, mode, ecLevel */) {
+  willFit(dataLength, version, mode, ecLevel) {
     // Mode indicator is always 4 bits for QR Codes.
-    /*
     const modeIndicatorLength = 4;
     const characterCountIndicatorLength = this.getCharacterCountIndicatorLength(
       version,
@@ -986,8 +985,13 @@ const VersionObj: Version = {
         prev + (current.totalCodewords - current.dataCodewords) * 8,
       0
     );
-    */
-    return false;
+    return (
+      this.amountDataModules(version) -
+        (modeIndicatorLength +
+          characterCountIndicatorLength +
+          errorCorrectionBits) >=
+      dataLength
+    );
   },
   characterCountIndicatorLength: {
     alphanumeric: [9, 11, 13],
@@ -1027,6 +1031,7 @@ const VersionObj: Version = {
         this.amountInfoModules(version))
     );
   },
+  // Find a way to improve this later.
   amountAlignmentPatterns(version) {
     if (version === 1) return 0;
     if (version >= 2 && version < 7) return 1;

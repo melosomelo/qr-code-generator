@@ -36,15 +36,20 @@ const generateQRCode: GenerateQRCode = (data, options) => {
     options?.errorCorrectionDetectionLevel ?? "M";
   const encoder = encoders[mode];
   const encodedData = encoder.encode(data);
+  let version = 1;
   // Check to see if provided version + ecLevel is enough to store the data.
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (options?.version) {
     assert(
-      Version.willFit(options?.version, ecLevel),
+      Version.willFit(encodedData.length, options.version, mode, ecLevel),
       "Data is too big for selected version!"
     );
+    version = options.version;
   } else {
     // If no version was provided, calculate the minimal version that works.
+    while (!Version.willFit(encodedData.length, version, mode, ecLevel)) {
+      version += 1;
+    }
   }
   return new QRCode(inputBuffer, {
     mode,
