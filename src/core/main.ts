@@ -50,7 +50,8 @@ function mountCodewords(
   const amountCodewords =
     Math.floor(Version.amountDataModules(version) / 8) -
     Math.floor(Version.amountErrorCorrectionModules(version, ecLevel) / 8);
-  for (let i = 0; i < amountCodewords - codewords.length; i++) {
+  const reps = amountCodewords - codewords.length;
+  for (let i = 0; i < reps; i++) {
     if (i % 2 === 0) codewords.push("11101100");
     else codewords.push("00010001");
   }
@@ -101,12 +102,13 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   const dataBitStream = `${modeIndicator}${characterCountIndicator}${encodedData}${terminatorSequence}`;
   // Mount the codewords.
   const codewords = mountCodewords(dataBitStream, version, ecLevel);
-  console.log(codewords);
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",
     version: 40,
   });
 };
+
+generateQRCode("0123456", { errorCorrectionDetectionLevel: "L", version: 1 });
 
 export default generateQRCode;
