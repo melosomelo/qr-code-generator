@@ -1011,7 +1011,7 @@ const VersionObj: Version = {
     const separatorModules = 15 * 3;
     const timingPatternModules = (l - 8 * 2) * 2;
     // The alignment patterns intersect with timing patterns in
-    // some version, so we need to make sure they're not counted twice.
+    // some versions, so we need to make sure they're not counted twice.
     const alignmentPatternModules =
       25 * this.amountAlignmentPatterns(version) -
       5 * this.amountAlignmentPatternsIntersectingTimingPatterns(version);

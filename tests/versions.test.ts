@@ -93,6 +93,12 @@ describe("Testing the Version object", () => {
       [100, 1, "numeric", "L", true],
       [371, 4, "alphanumeric", "Q", true],
       [372, 4, "alphanumeric", "Q", false],
+      [5238, 28, "numeric", "H", true],
+      [5270, 28, "numeric", "H", true],
+      [5271, 28, "numeric", "H", false],
+      [18312, 35, "alphanumeric", "L", true],
+      [18431, 35, "alphanumeric", "L", true],
+      [18913, 35, "alphanumeric", "L", false],
     ])(
       "%d bits, version %d, %s mode, ecLevel %s",
       (dataLength, version, mode, ecLevel, expectedValue) => {
