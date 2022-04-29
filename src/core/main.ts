@@ -11,6 +11,7 @@ import type {
 import assert from "../util/assert";
 import Version from "../core/versions";
 import encoders from "../core/encoders";
+import toBinaryString from "../util/toBinaryString";
 
 function isNumericChar(byte: number): boolean {
   return byte >= 48 && byte <= 57;
@@ -51,6 +52,24 @@ const generateQRCode: GenerateQRCode = (data, options) => {
     }
     // Deal with data too big for any possible version.
   }
+  // Determine the size of the terminator sequence.
+  // For QR Codes, the size is always 4 bits. But, if the remaining data capacity
+  // is less than 4, then the sequence must be shortened (or even omitted).
+  const terminatorSequenceLength = Math.min(
+    4,
+    Version.amountRealDataModules(version, mode, ecLevel) - encodedData.length
+  );
+  let terminatorSequence = "";
+  for (let i = 0; i < terminatorSequenceLength; i++) {
+    terminatorSequence += "0";
+  }
+  const modeIndicator = MODE_INDICATORS[mode];
+  const characterCountIndicator = toBinaryString(
+    data.length,
+    Version.getCharacterCountIndicatorLength(version, mode)
+  );
+  // Mount the data bit stream.
+  const dataBitStream = `${modeIndicator}${characterCountIndicator}${encodedData}${terminatorSequence}`;
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",
