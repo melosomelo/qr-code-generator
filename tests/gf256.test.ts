@@ -34,4 +34,14 @@ describe("GF256", () => {
       expect(GF256.divide(a, b)).toBe(result);
     });
   });
+  describe("pow", () => {
+    it.each([
+      [2, 2, 4],
+      [2, 3, 8],
+      [2, 1, 2],
+      [2, 0, 1],
+      [20, 2, 13],
+      [2, 10, 116],
+    ])("%#", (a, b, expected) => expect(GF256.pow(a, b)).toBe(expected));
+  });
 });

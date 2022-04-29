@@ -17,6 +17,13 @@ const GF: GF256 = {
     const bInverse = this.antilog[255 - this.log[b]];
     return this.antilog[(this.log[a] + this.log[bInverse]) % 255];
   },
+  pow(a: number, b: number) {
+    let result = 1;
+    for (let i = 0; i < b; i++) {
+      result = this.multiply(result, a);
+    }
+    return result;
+  },
   log: {},
   antilog: {},
 };

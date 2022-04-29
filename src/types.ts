@@ -1,9 +1,11 @@
+import Polynomial from "./core/math/polynomial";
 import QRCode from "./core/qrcode";
 
 export interface GF256 {
   add: (a: number, b: number) => number;
   multiply: (a: number, b: number) => number;
   divide: (a: number, b: number) => number;
+  pow: (a: number, b: number) => number;
   log: {
     [key: number]: number;
   };
@@ -86,4 +88,8 @@ export interface Version {
     ecLevel: ErrorCorrectionDetectionLevel
   ) => number;
   length: (version: number) => number;
+}
+
+export interface ReedSolomon {
+  getGeneratorPolynomial: (degree: number) => Polynomial;
 }
