@@ -31,7 +31,6 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   // So far, only support for ISO/IEC 8859-1 (latin1).
   const inputBuffer = Buffer.from(data, "latin1");
   const mode: EncodingMode = options?.mode ?? analyzeData(inputBuffer);
-  const modeIndicator = MODE_INDICATORS[mode];
   const ecLevel: ErrorCorrectionDetectionLevel =
     options?.errorCorrectionDetectionLevel ?? "M";
   const encoder = encoders[mode];
@@ -50,6 +49,7 @@ const generateQRCode: GenerateQRCode = (data, options) => {
     while (!Version.willFit(encodedData.length, version, mode, ecLevel)) {
       version += 1;
     }
+    // Deal with data too big for any possible version.
   }
   return new QRCode(inputBuffer, {
     mode,

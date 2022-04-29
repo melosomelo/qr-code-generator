@@ -86,4 +86,20 @@ describe("Testing the Version object", () => {
       expect(Version.amountDataModules(v)).toBe(expectedValue);
     });
   });
+  describe("willFit", () => {
+    it.each([
+      [210, 1, "numeric", "L", false],
+      [153, 1, "numeric", "L", false],
+      [100, 1, "numeric", "L", true],
+      [371, 4, "alphanumeric", "Q", true],
+      [372, 4, "alphanumeric", "Q", false],
+    ])(
+      "%d bits, version %d, %s mode, ecLevel %s",
+      (dataLength, version, mode, ecLevel, expectedValue) => {
+        expect(Version.willFit(dataLength, version, mode, ecLevel)).toBe(
+          expectedValue
+        );
+      }
+    );
+  });
 });

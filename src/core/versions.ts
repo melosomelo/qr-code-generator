@@ -985,11 +985,13 @@ const VersionObj: Version = {
         prev + (current.totalCodewords - current.dataCodewords) * 8,
       0
     );
+    const remainderBits = this.amountDataModules(version) % 8;
     return (
       this.amountDataModules(version) -
         (modeIndicatorLength +
           characterCountIndicatorLength +
-          errorCorrectionBits) >=
+          errorCorrectionBits +
+          remainderBits) >=
       dataLength
     );
   },
@@ -1053,5 +1055,7 @@ const VersionObj: Version = {
     return 21 + 4 * (version - 1);
   },
 };
+
+VersionObj.willFit(372, 4, "alphanumeric", "Q");
 
 export default VersionObj;
