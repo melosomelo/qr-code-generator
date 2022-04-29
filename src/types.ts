@@ -81,5 +81,9 @@ export interface Version {
   amountAlignmentPatternsIntersectingTimingPatterns: (
     version: number
   ) => number;
+  amountErrorCorrectionModules: (
+    version: number,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ) => number;
   length: (version: number) => number;
 }

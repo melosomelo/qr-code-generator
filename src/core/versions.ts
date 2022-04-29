@@ -985,12 +985,9 @@ const VersionObj: Version = {
       version,
       mode
     );
-    const errorCorrectionBits = this.versions[version - 1].ecInfo[
+    const errorCorrectionBits = this.amountErrorCorrectionModules(
+      version,
       ecLevel
-    ].ECBs.reduce<number>(
-      (prev, current) =>
-        prev + (current.totalCodewords - current.dataCodewords) * 8,
-      0
     );
     const remainderBits = this.amountDataModules(version) % 8;
     return (
@@ -1004,6 +1001,13 @@ const VersionObj: Version = {
   characterCountIndicatorLength: {
     alphanumeric: [9, 11, 13],
     numeric: [10, 12, 14],
+  },
+  amountErrorCorrectionModules(version, ecLevel) {
+    return this.versions[version - 1].ecInfo[ecLevel].ECBs.reduce<number>(
+      (prev, current) =>
+        prev + (current.totalCodewords - current.dataCodewords) * 8,
+      0
+    );
   },
   getCharacterCountIndicatorLength(version, mode) {
     const possibleValues = this.characterCountIndicatorLength[mode];
