@@ -71,6 +71,11 @@ export interface Version {
   amountInfoModules: (version: number) => number;
   amountFunctionPatternModules: (version: number) => number;
   amountDataModules: (version: number) => number;
+  amountRealDataModules: (
+    version: number,
+    mode: EncodingMode,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ) => number;
   amountTotalModules: (version: number) => number;
   amountAlignmentPatterns: (version: number) => number;
   amountAlignmentPatternsIntersectingTimingPatterns: (

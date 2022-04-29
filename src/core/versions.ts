@@ -972,6 +972,13 @@ const VersionObj: Version = {
     },
   ],
   willFit(dataLength, version, mode, ecLevel) {
+    return this.amountRealDataModules(version, mode, ecLevel) >= dataLength;
+  },
+  // When talking about data modules, the specification doesn't distinguish between
+  // modules used by the mode indicator, character count indicator, error correction codewords
+  // and remainder bits. So, "real" data modules would be those ones that are
+  // available for use by the encoded data.
+  amountRealDataModules(version: number, mode, ecLevel) {
     // Mode indicator is always 4 bits for QR Codes.
     const modeIndicatorLength = 4;
     const characterCountIndicatorLength = this.getCharacterCountIndicatorLength(
@@ -988,11 +995,10 @@ const VersionObj: Version = {
     const remainderBits = this.amountDataModules(version) % 8;
     return (
       this.amountDataModules(version) -
-        (modeIndicatorLength +
-          characterCountIndicatorLength +
-          errorCorrectionBits +
-          remainderBits) >=
-      dataLength
+      (modeIndicatorLength +
+        characterCountIndicatorLength +
+        errorCorrectionBits +
+        remainderBits)
     );
   },
   characterCountIndicatorLength: {
