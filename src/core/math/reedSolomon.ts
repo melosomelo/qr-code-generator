@@ -1,6 +1,7 @@
 import type { ReedSolomon } from "../../types";
 import Polynomial from "./polynomial";
 import GF256 from "./gf256";
+import Version from "../versions";
 
 const ReedSolomonObj: ReedSolomon = {
   getGeneratorPolynomial(n) {
@@ -12,6 +13,9 @@ const ReedSolomonObj: ReedSolomon = {
       );
     }
     return result;
+  },
+  generateErrorCorrectionCodewords(codewords, version, ecLevel) {
+    const ECBInfo = Version.versions[version].ecInfo[ecLevel].ECBs;
   },
 };
 

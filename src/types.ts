@@ -92,4 +92,9 @@ export interface Version {
 
 export interface ReedSolomon {
   getGeneratorPolynomial: (degree: number) => Polynomial;
+  generateErrorCorrectionCodewords: (
+    codewords: string[],
+    version: number,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ) => string[];
 }
