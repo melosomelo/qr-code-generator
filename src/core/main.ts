@@ -4,6 +4,7 @@
 import QRCode from "./qrcode";
 import MODE_INDICATORS from "../util/modeIndicators";
 import type {
+  ECB,
   EncodingMode,
   ErrorCorrectionDetectionLevel,
   GenerateQRCode,
@@ -29,6 +30,8 @@ export function analyzeData(data: Buffer): EncodingMode {
   return result;
 }
 
+// Mounts the initial codewords after encoding data and setting
+// mode indicator, character count indicator and terminator sequence.
 function mountCodewords(
   bitStream: string,
   version: number,
@@ -57,6 +60,33 @@ function mountCodewords(
     else codewords.push("00010001");
   }
   return codewords;
+}
+
+// After mounting the blocks, this will mount the final sequence of codewords
+function interleaveBlocks(blocks: ECB[]): string {
+  let result = "";
+  // Some blocks have more data codewords than others, and the specification states
+  // that the smallest blocks must come first. I don't know for sure if I wrote
+  // every block in the correct order in the versions.ts file, so I'm sorting just in case.
+  blocks.sort((a, b) => a.dataCodewords.length - b.dataCodewords.length);
+  const maxAmountOfCodewords = blocks[blocks.length - 1].dataCodewords.length;
+  // First, we interleave the data codewords.
+  for (let i = 0; i < maxAmountOfCodewords; i++) {
+    for (let j = 0; j < blocks.length; j++) {
+      // Remember, some blocks have less data codewords than others.
+      if (blocks[j].dataCodewords[i] === undefined) continue;
+      result += blocks[j].dataCodewords[i];
+    }
+  }
+  // Then, we interleave the ec codewords, following the same strategy as before.
+  // Each block always has the same amount.
+  const amountEcCodewords = blocks[0].ecCodewords.length;
+  for (let i = 0; i < amountEcCodewords; i++) {
+    for (let j = 0; j < blocks.length; j++) {
+      result += blocks[j].ecCodewords[i];
+    }
+  }
+  return result;
 }
 
 const generateQRCode: GenerateQRCode = (data, options) => {
@@ -105,6 +135,12 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   const codewords = mountCodewords(dataBitStream, version, ecLevel);
   // Generate the blocks of data and ec codewords.
   const blocks = RS.generateBlocks(codewords, version, ecLevel);
+  // Generate the final message by interleaving blocks and adding remainder bits.
+  let finalMessage = interleaveBlocks(blocks);
+  const amountRemainderBits = Version.amountDataModules(version) % 8;
+  for (let i = 0; i < amountRemainderBits; i++) {
+    finalMessage += "0";
+  }
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",
@@ -113,8 +149,8 @@ const generateQRCode: GenerateQRCode = (data, options) => {
 };
 
 generateQRCode("HELLO WORLD", {
-  errorCorrectionDetectionLevel: "M",
-  version: 1,
+  errorCorrectionDetectionLevel: "L",
+  version: 6,
 });
 
 export default generateQRCode;
