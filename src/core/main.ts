@@ -12,6 +12,7 @@ import assert from "../util/assert";
 import Version from "../core/versions";
 import encoders from "../core/encoders";
 import toBinaryString from "../util/toBinaryString";
+import RS from "./math/reedSolomon";
 
 function isNumericChar(byte: number): boolean {
   return byte >= 48 && byte <= 57;
@@ -102,6 +103,8 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   const dataBitStream = `${modeIndicator}${characterCountIndicator}${encodedData}${terminatorSequence}`;
   // Mount the codewords.
   const codewords = mountCodewords(dataBitStream, version, ecLevel);
+  // Generate error correction codewords
+  console.log(RS.generateErrorCorrectionCodewords(codewords, version, ecLevel));
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",
@@ -109,6 +112,9 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   });
 };
 
-generateQRCode("0123456", { errorCorrectionDetectionLevel: "L", version: 1 });
+generateQRCode("HELLO WORLD", {
+  errorCorrectionDetectionLevel: "M",
+  version: 1,
+});
 
 export default generateQRCode;
