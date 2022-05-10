@@ -5,7 +5,7 @@ import Version from "../versions";
 import toDecimal from "../../util/toDecimal";
 import toBinaryString from "../../util/toBinaryString";
 
-const ReedSolomonObj: ReedSolomon = {
+const RS: ReedSolomon = {
   getGeneratorPolynomial(n) {
     let result = new Polynomial(0, [1]);
     for (let i = 0; i < n; i++) {
@@ -33,7 +33,8 @@ const ReedSolomonObj: ReedSolomon = {
       });
       j += ECBs[i].dataCodewords;
     }
-    // Calculating the error correction codewords
+    // Calculating the error correction codewords and
+    // mapping each group to an easier to work shape.
     return groups.map((group) => {
       const generatorPolynomial = this.getGeneratorPolynomial(
         group.amountEcCodewords
@@ -65,4 +66,4 @@ const ReedSolomonObj: ReedSolomon = {
   },
 };
 
-export default ReedSolomonObj;
+export default RS;

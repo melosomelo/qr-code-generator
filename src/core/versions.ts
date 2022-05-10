@@ -1,9 +1,9 @@
 // A global object that stores data about different QR Code versions
 // exposes some utility methods
 
-import type { Version, ECB } from "../types";
+import type { Version, ECBInfo } from "../types";
 
-function makeECB(totalCodewords: number, dataCodewords: number): ECB {
+function makeECB(totalCodewords: number, dataCodewords: number): ECBInfo {
   return {
     totalCodewords,
     dataCodewords,
@@ -14,8 +14,8 @@ function makeECBs(
   amount: number,
   totalCodewords: number,
   dataCodewords: number
-): ECB[] {
-  const result: ECB[] = [];
+): ECBInfo[] {
+  const result: ECBInfo[] = [];
   for (let i = 0; i < amount; i++) {
     result.push(makeECB(totalCodewords, dataCodewords));
   }

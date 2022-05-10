@@ -42,7 +42,7 @@ export interface AlphanumericEncoder extends Encoder {
   getEncoded: (char: string) => number;
 }
 
-export interface ECB {
+export interface ECBInfo {
   totalCodewords: number;
   dataCodewords: number;
 }
@@ -50,7 +50,7 @@ interface VersionInfo {
   version: number;
   ecInfo: {
     [key in ErrorCorrectionDetectionLevel]: {
-      ECBs: ECB[];
+      ECBs: ECBInfo[];
     };
   };
 }
