@@ -63,16 +63,6 @@ const ReedSolomonObj: ReedSolomon = {
       return result;
     });
   },
-  calculate(group) {
-    const generatorPolynomial = this.getGeneratorPolynomial(
-      group.amountEcCodewords
-    );
-    const messagePolynomial = new Polynomial(
-      group.codewords.length - 1,
-      group.codewords
-    );
-    console.log(generatorPolynomial, messagePolynomial);
-  },
 };
 
 export default ReedSolomonObj;

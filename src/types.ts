@@ -97,8 +97,4 @@ export interface ReedSolomon {
     version: number,
     ecLevel: ErrorCorrectionDetectionLevel
   ) => Array<{ dataCodewords: string[]; ecCodewords: string[] }>;
-  calculate: (group: {
-    codewords: number[];
-    amountEcCodewords: number;
-  }) => void;
 }
