@@ -101,10 +101,10 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   );
   // Mount the data bit stream.
   const dataBitStream = `${modeIndicator}${characterCountIndicator}${encodedData}${terminatorSequence}`;
-  // Mount the codewords.
+  // Mount the data codewords.
   const codewords = mountCodewords(dataBitStream, version, ecLevel);
-  // Generate error correction codewords
-  console.log(RS.generateErrorCorrectionCodewords(codewords, version, ecLevel));
+  // Generate the blocks of data and ec codewords.
+  const blocks = RS.generateBlocks(codewords, version, ecLevel);
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",

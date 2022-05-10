@@ -16,53 +16,57 @@ const RS: ReedSolomon = {
     }
     return result;
   },
-  generateErrorCorrectionCodewords(codewords, version, ecLevel) {
+  generateBlocks(codewords, version, ecLevel) {
     // First, we transform the codewords into numbers.
     const numberedCodewords = codewords.map((codeword) => toDecimal(codeword));
     // The generation of error codewords will be done separately for each group.
     // So we need to get the info for this specific version and this specific ecLevel.
-    const ECBs = Version.versions[version - 1].ecInfo[ecLevel].ECBs;
-    // Divide into groups
+    const ECBsInfo = Version.versions[version - 1].ecInfo[ecLevel].ECBs;
+    // Divide into groups (pre-blocks)
     const groups: Array<{ codewords: number[]; amountEcCodewords: number }> =
       [];
     let j = 0;
-    for (let i = 0; i < ECBs.length; i++) {
+    for (let i = 0; i < ECBsInfo.length; i++) {
       groups.push({
-        amountEcCodewords: ECBs[i].totalCodewords - ECBs[i].dataCodewords,
-        codewords: numberedCodewords.slice(j, j + ECBs[i].dataCodewords),
+        amountEcCodewords:
+          ECBsInfo[i].totalCodewords - ECBsInfo[i].dataCodewords,
+        codewords: numberedCodewords.slice(j, j + ECBsInfo[i].dataCodewords),
       });
-      j += ECBs[i].dataCodewords;
+      j += ECBsInfo[i].dataCodewords;
     }
-    // Calculating the error correction codewords and
-    // mapping each group to an easier to work shape.
+
     return groups.map((group) => {
-      const generatorPolynomial = this.getGeneratorPolynomial(
+      const remainderCoefficients = this.calculateEcCodewords(
+        group.codewords,
         group.amountEcCodewords
       );
-      // The specification states that the message polynomial must be multiplied
-      // by x^(amount ec codewords)
-      const messagePolynomial = Polynomial.multiply(
-        new Polynomial(group.codewords.length - 1, group.codewords),
-        new Polynomial(group.amountEcCodewords, [
-          1,
-          ...new Array(group.amountEcCodewords).fill(0),
-        ])
-      );
-      const { remainder } = Polynomial.longDivide(
-        messagePolynomial,
-        generatorPolynomial
-      );
-      // Converting the codewords and ec codewords back to binary strings.
-      const result = {
+      return {
+        ecCodewords: remainderCoefficients.map((coefficient) =>
+          toBinaryString(coefficient, 8)
+        ),
         dataCodewords: group.codewords.map((codeword) =>
           toBinaryString(codeword, 8)
         ),
-        ecCodewords: remainder.coefficients.map((coefficient) =>
-          toBinaryString(coefficient, 8)
-        ),
       };
-      return result;
     });
+  },
+  // Calculates error correction codewords for a specific message.
+  calculateEcCodewords(message, generatorDegree) {
+    const generatorPolynomial = this.getGeneratorPolynomial(generatorDegree);
+    // The specification states that the message polynomial must be multiplied
+    // by x^(amount ec codewords)
+    const messagePolynomial = Polynomial.multiply(
+      new Polynomial(message.length - 1, message),
+      new Polynomial(generatorDegree, [
+        1,
+        ...new Array(generatorDegree).fill(0),
+      ])
+    );
+    const { remainder } = Polynomial.longDivide(
+      messagePolynomial,
+      generatorPolynomial
+    );
+    return remainder.coefficients;
   },
 };
 

@@ -46,6 +46,12 @@ export interface ECBInfo {
   totalCodewords: number;
   dataCodewords: number;
 }
+
+export interface ECB {
+  dataCodewords: string[];
+  ecCodewords: string[];
+}
+
 interface VersionInfo {
   version: number;
   ecInfo: {
@@ -92,9 +98,13 @@ export interface Version {
 
 export interface ReedSolomon {
   getGeneratorPolynomial: (degree: number) => Polynomial;
-  generateErrorCorrectionCodewords: (
+  generateBlocks: (
     codewords: string[],
     version: number,
     ecLevel: ErrorCorrectionDetectionLevel
-  ) => Array<{ dataCodewords: string[]; ecCodewords: string[] }>;
+  ) => ECB[];
+  calculateEcCodewords: (
+    message: number[],
+    generatorDegree: number
+  ) => number[];
 }
