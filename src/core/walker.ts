@@ -62,16 +62,18 @@ export default class Walker {
         console.log("Coming from message!");
       } else {
         // Here we either alternate or fill with 0 and 1
-        let currentFill: "0" | "1";
+        let currentFill: "0" | "1" | undefined;
         if (instruction.fillWith !== undefined) {
           currentFill = instruction.fillWith;
         }
         // `alternate` takes precedence over fillWith.
-        if (instruction.alternate && instruction.startWith !== undefined) {
+        if (instruction.alternate) {
+          if (instruction.startWith === undefined)
+            throw new Error("Cannot set alternate and not set startWith!");
           currentFill = instruction.startWith;
         }
         if (currentFill === undefined) {
-          throw new Error("Must set at least one of fillWith and startWith!");
+          throw new Error("Must use alternate or fillWith!");
         }
         const movementFn = this.movementFunctions[instruction.direction];
         if (instruction.fillFirst) {
