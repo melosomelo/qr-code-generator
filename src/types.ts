@@ -1,5 +1,6 @@
 import Polynomial from "./core/math/polynomial";
 import QRCode from "./core/qrcode";
+import Walker from "./core/walker";
 
 export interface GF256 {
   add: (a: number, b: number) => number;
@@ -111,8 +112,11 @@ export interface ReedSolomon {
 
 export interface Mounter {
   mountMatrix: (message: string, version: number) => string[][];
-  placeFunctionPatterns: (matrix: string[][]) => void;
-  placeFinderPatterns: (matrix: string[][]) => void;
+  placeFunctionPatterns: () => void;
+  placeFinderPatterns: () => void;
+  placeFinderPattern: (x: number, y: number) => void;
+  walker: Walker;
+  matrix: string[][];
 }
 
 export interface MoveInstruction {
@@ -128,12 +132,6 @@ export interface MoveInstruction {
   alternate?: boolean;
   // If you want to alternate, you need to specify which bit to start with.
   startWith?: "0" | "1";
-}
-
-export interface Walker {
-  matrix: string[][];
-  x: number;
-  y: number;
 }
 
 export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";

@@ -151,8 +151,8 @@ const generateQRCode: GenerateQRCode = (data, options) => {
 };
 
 generateQRCode("HELLO WORLD", {
-  errorCorrectionDetectionLevel: "L",
-  version: 6,
+  errorCorrectionDetectionLevel: "M",
+  version: 1,
 });
 
 export default generateQRCode;

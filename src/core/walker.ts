@@ -1,18 +1,13 @@
-import type { Direction, MoveInstruction } from "../types";
+import type { MoveInstruction } from "../types";
 
 export default class Walker {
-  matrix: string[][] = new Array<string[]>(0).fill(new Array<string>(0));
-  x = 0;
-  y = 0;
+  private matrix: string[][] = new Array<string[]>(0).fill(
+    new Array<string>(0)
+  );
 
-  private readonly movementFunctions: {
-    [d in Direction]: () => void;
-  } = {
-    UP: this.moveUp,
-    DOWN: this.moveDown,
-    RIGHT: this.moveRight,
-    LEFT: this.moveLeft,
-  };
+  private x = 0;
+
+  private y = 0;
 
   static walk(matrix: string[][]): Walker {
     const w = new Walker();
@@ -20,7 +15,7 @@ export default class Walker {
     return w;
   }
 
-  startingAt(x: number, y: number): Walker {
+  public startingAt(x: number, y: number): Walker {
     const w = new Walker();
     w.matrix = this.matrix;
     w.x = x;
@@ -28,28 +23,32 @@ export default class Walker {
     return w;
   }
 
-  moveLeft(): void {
+  private moveLeft(): void {
     this.x -= 1;
   }
 
-  moveRight(): void {
+  private moveRight(): void {
     this.x += 1;
   }
 
-  moveUp(): void {
+  private moveUp(): void {
     this.y -= 1;
   }
 
-  moveDown(): void {
+  private moveDown(): void {
     this.y += 1;
   }
 
-  alternate(bit: "0" | "1"): "0" | "1" {
+  private alternate(bit: "0" | "1"): "0" | "1" {
     if (bit === "0") return "1";
     return "0";
   }
 
-  move(instructions: MoveInstruction[]): void {
+  public fill(x: number, y: number, fill: "0" | "1"): void {
+    this.matrix[y][x] = fill;
+  }
+
+  public move(instructions: MoveInstruction[]): void {
     for (let i = 0; i < instructions.length; i++) {
       const instruction = instructions[i];
       // This is the case where fillWith comes from the message.
@@ -75,16 +74,28 @@ export default class Walker {
         if (currentFill === undefined) {
           throw new Error("Must use alternate or fillWith!");
         }
-        const movementFn = this.movementFunctions[instruction.direction];
         if (instruction.fillFirst) {
-          this.matrix[this.x][this.y] = currentFill;
+          this.matrix[this.y][this.x] = currentFill;
           if (instruction.alternate) {
             currentFill = this.alternate(currentFill);
           }
         }
         for (let j = 0; j < instruction.times; j++) {
-          movementFn();
-          this.matrix[this.x][this.y] = currentFill;
+          switch (instruction.direction) {
+            case "DOWN":
+              this.moveDown();
+              break;
+            case "UP":
+              this.moveUp();
+              break;
+            case "LEFT":
+              this.moveLeft();
+              break;
+            case "RIGHT":
+              this.moveRight();
+              break;
+          }
+          this.matrix[this.y][this.x] = currentFill;
           if (instruction.alternate) {
             currentFill = this.alternate(currentFill);
           }
