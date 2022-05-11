@@ -108,3 +108,28 @@ export interface ReedSolomon {
     generatorDegree: number
   ) => number[];
 }
+
+export interface Mounter {
+  mountMatrix: (message: string, version: number) => string[][];
+  placeFunctionPatterns: (matrix: string[][]) => void;
+  placeFinderPatterns: (matrix: string[][]) => void;
+}
+
+export interface MoveInstructions {
+  direction: Direction;
+  times: number;
+  fillWith: "0" | "1";
+}
+
+export interface Walker {
+  matrix: string[][];
+  x: number;
+  y: number;
+}
+
+export enum Direction {
+  UP = -1,
+  DOWN = 1,
+  LEFT = -1,
+  RIGHT = 1,
+}

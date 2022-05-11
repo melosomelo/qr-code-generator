@@ -10,10 +10,11 @@ import type {
   GenerateQRCode,
 } from "../types";
 import assert from "../util/assert";
-import Version from "../core/versions";
-import encoders from "../core/encoders";
+import Version from "./versions";
+import encoders from "./encoders";
 import toBinaryString from "../util/toBinaryString";
 import RS from "./math/reedSolomon";
+import Mounter from "./mounter";
 
 function isNumericChar(byte: number): boolean {
   return byte >= 48 && byte <= 57;
@@ -141,6 +142,7 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   for (let i = 0; i < amountRemainderBits; i++) {
     finalMessage += "0";
   }
+  Mounter.mountMatrix(finalMessage, version);
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",
