@@ -127,6 +127,23 @@ const MounterObj: Mounter = {
     // top right one
     this.placeSeparator(l - 7, 0, "DOWN", "RIGHT");
   },
+  // Timing patterns are one module-wide pattern of alternating
+  // black and white modules that connect the adjacent pairs of finder patterns.
+  placeTimingPattern(x, y) {
+    const l = this.matrix.length;
+    const lengthTimingPattern = l - 8 * 2;
+    for (let i = 0; i < lengthTimingPattern; i++) {
+      if (i % 2 === 0) {
+        this.matrix[y][x + i] = "1";
+      } else {
+        this.matrix[y][x + i] = "0";
+      }
+    }
+  },
+  placeTimingPatterns() {
+    this.placeTimingPattern(8, 6);
+    this.placeTimingPattern(6, 8);
+  },
 };
 
 export default MounterObj;

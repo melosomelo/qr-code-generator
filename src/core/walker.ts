@@ -39,11 +39,6 @@ export default class Walker {
     this.y += 1;
   }
 
-  private alternate(bit: "0" | "1"): "0" | "1" {
-    if (bit === "0") return "1";
-    return "0";
-  }
-
   public fill(x: number, y: number, fill: "0" | "1"): void {
     this.matrix[y][x] = fill;
   }

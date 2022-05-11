@@ -123,6 +123,7 @@ export interface Mounter {
   ) => void;
   placeSeparators: () => void;
   placeTimingPattern: (x: number, y: number) => void;
+  placeTimingPatterns: () => void;
   walker: Walker;
   matrix: string[][];
 }
