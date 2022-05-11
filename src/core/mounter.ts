@@ -24,6 +24,7 @@ const MounterObj: Mounter = {
   },
   placeFunctionPatterns() {
     this.placeFinderPatterns();
+    this.placeSeparators();
   },
   // The finder patterns are located on the top left, top right and bottom left of the QR Code.
   // They are composed of three concentric squares, with the first being a 7x7 dark square,
@@ -108,6 +109,23 @@ const MounterObj: Mounter = {
     this.placeFinderPattern(0, l - 6);
     // top right one
     this.placeFinderPattern(l - 6, 0);
+  },
+  // Separators separate a finder pattern from the rest of the qr code.
+  // They are an 1 module wide and have an L shape.
+  placeSeparator(x, y, firstDir, secondDir) {
+    this.walker.startingAt(x, y).move([
+      { fillFirst: true, fillWith: "0", times: 7, direction: firstDir },
+      { fillWith: "0", times: 7, direction: secondDir },
+    ]);
+  },
+  placeSeparators() {
+    const l = this.matrix.length - 1;
+    // top left one
+    this.placeSeparator(7, 0, "DOWN", "LEFT");
+    // bottom left one
+    this.placeSeparator(0, l - 7, "RIGHT", "DOWN");
+    // top right one
+    this.placeSeparator(l - 7, 0, "DOWN", "RIGHT");
   },
 };
 
