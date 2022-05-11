@@ -1,13 +1,6 @@
 import type { Direction, MoveInstruction } from "../types";
-startingAt(0, 0).move([
-  {
-    direction: Direction.RIGHT,
-    times: 6,
-    fillWith: "0",
-  },
-]);
 
-class Walker {
+export default class Walker {
   matrix: string[][] = new Array<string[]>(0).fill(new Array<string>(0));
   x = 0;
   y = 0;
@@ -59,26 +52,40 @@ class Walker {
   move(instructions: MoveInstruction[]): void {
     for (let i = 0; i < instructions.length; i++) {
       const instruction = instructions[i];
-      // Alternate takes precedence over fillWith.
-      if (instruction.alternate ?? false) {
-        if (instruction.startWith === undefined) {
-          throw new Error(
-            "Cannot specify alternate in an instruction and then don't specify startWith!"
-          );
-        }
+      // This is the case where fillWith comes from the message.
+      // I'll deal with it later.
+      if (
+        instruction.fillWith !== undefined &&
+        instruction.fillWith !== "0" &&
+        instruction.fillWith !== "1"
+      ) {
+        console.log("Coming from message!");
       } else {
-        if (instruction.fillWith === "0" || instruction.fillWith === "1") {
-          if (instruction.fillFirst ?? false) {
-            this.matrix[this.x][this.y] = instruction.fillWith;
+        // Here we either alternate or fill with 0 and 1
+        let currentFill: "0" | "1";
+        if (instruction.fillWith !== undefined) {
+          currentFill = instruction.fillWith;
+        }
+        // `alternate` takes precedence over fillWith.
+        if (instruction.alternate && instruction.startWith !== undefined) {
+          currentFill = instruction.startWith;
+        }
+        if (currentFill === undefined) {
+          throw new Error("Must set at least one of fillWith and startWith!");
+        }
+        const movementFn = this.movementFunctions[instruction.direction];
+        if (instruction.fillFirst) {
+          this.matrix[this.x][this.y] = currentFill;
+          if (instruction.alternate) {
+            currentFill = this.alternate(currentFill);
           }
-          const movementFn = this.movementFunctions[instruction.direction];
-          for (let i = 0; i < instruction.times; i++) {
-            movementFn();
-            this.matrix[this.y][this.y] = instruction.fillWith;
+        }
+        for (let j = 0; j < instruction.times; j++) {
+          movementFn();
+          this.matrix[this.x][this.y] = currentFill;
+          if (instruction.alternate) {
+            currentFill = this.alternate(currentFill);
           }
-        } else {
-          // Deal with fillWith from a longer string later.
-          console.log("Nothing for now!");
         }
       }
     }
