@@ -118,7 +118,16 @@ export interface Mounter {
 export interface MoveInstruction {
   direction: Direction;
   times: number;
-  fillWith: "0" | "1";
+  // Should the walker start out by moving away from the first cell or by filling it and then
+  // moving away from it?
+  fillFirst?: boolean;
+  // This could mean: fill the region with all 0s, all 1s, or with the data
+  // from a bigger string (the message or part of it).
+  fillWith?: "0" | "1" | string;
+  // Some patterns require to alternat between 0s and 1s.
+  alternate?: boolean;
+  // If you want to alternate, you need to specify which bit to start with.
+  startWith?: "0" | "1";
 }
 
 export interface Walker {
@@ -127,9 +136,4 @@ export interface Walker {
   y: number;
 }
 
-export enum Direction {
-  UP = -1,
-  DOWN = 1,
-  LEFT = -1,
-  RIGHT = 1,
-}
+export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
