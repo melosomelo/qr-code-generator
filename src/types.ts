@@ -122,6 +122,7 @@ export interface Mounter {
     secondDir: Direction
   ) => void;
   placeSeparators: () => void;
+  placeTimingPattern: (x: number, y: number) => void;
   walker: Walker;
   matrix: string[][];
 }
@@ -134,11 +135,7 @@ export interface MoveInstruction {
   fillFirst?: boolean;
   // This could mean: fill the region with all 0s, all 1s, or with the data
   // from a bigger string (the message or part of it).
-  fillWith?: "0" | "1" | string;
-  // Some patterns require to alternat between 0s and 1s.
-  alternate?: boolean;
-  // If you want to alternate, you need to specify which bit to start with.
-  startWith?: "0" | "1";
+  fillWith: "0" | "1" | string;
 }
 
 export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";

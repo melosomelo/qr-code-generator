@@ -53,32 +53,12 @@ export default class Walker {
       const instruction = instructions[i];
       // This is the case where fillWith comes from the message.
       // I'll deal with it later.
-      if (
-        instruction.fillWith !== undefined &&
-        instruction.fillWith !== "0" &&
-        instruction.fillWith !== "1"
-      ) {
+      if (instruction.fillWith !== "0" && instruction.fillWith !== "1") {
         console.log("Coming from message!");
       } else {
-        // Here we either alternate or fill with 0 and 1
-        let currentFill: "0" | "1" | undefined;
-        if (instruction.fillWith !== undefined) {
-          currentFill = instruction.fillWith;
-        }
-        // `alternate` takes precedence over fillWith.
-        if (instruction.alternate) {
-          if (instruction.startWith === undefined)
-            throw new Error("Cannot set alternate and not set startWith!");
-          currentFill = instruction.startWith;
-        }
-        if (currentFill === undefined) {
-          throw new Error("Must use alternate or fillWith!");
-        }
+        const fill: "0" | "1" = instruction.fillWith;
         if (instruction.fillFirst) {
-          this.matrix[this.y][this.x] = currentFill;
-          if (instruction.alternate) {
-            currentFill = this.alternate(currentFill);
-          }
+          this.matrix[this.y][this.x] = fill;
         }
         for (let j = 0; j < instruction.times; j++) {
           switch (instruction.direction) {
@@ -95,10 +75,7 @@ export default class Walker {
               this.moveRight();
               break;
           }
-          this.matrix[this.y][this.x] = currentFill;
-          if (instruction.alternate) {
-            currentFill = this.alternate(currentFill);
-          }
+          this.matrix[this.y][this.x] = fill;
         }
       }
     }
