@@ -1,4 +1,4 @@
-import type { Direction } from "../types";
+import type { Direction, MoveInstruction } from "../types";
 startingAt(0, 0).move([
   {
     direction: Direction.RIGHT,
@@ -26,11 +26,5 @@ class Walker {
     return w;
   }
 
-  move(
-    instructions: Array<{
-      direction: Direction;
-      times: number;
-      fillWidth: "0" | "1";
-    }>
-  ): void {}
+  move(instructions: MoveInstruction[]): void {}
 }

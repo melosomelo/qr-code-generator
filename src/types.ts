@@ -115,7 +115,7 @@ export interface Mounter {
   placeFinderPatterns: (matrix: string[][]) => void;
 }
 
-export interface MoveInstructions {
+export interface MoveInstruction {
   direction: Direction;
   times: number;
   fillWith: "0" | "1";

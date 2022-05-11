@@ -1,10 +1,5 @@
-import type { Mounter, Walker } from "../types";
+import type { Mounter } from "../types";
 import Version from "./versions";
-
-function walk(matrix: string[][]): Walker {
-  const walker: Walker = { x: 0, y: 0, matrix };
-  return walker;
-}
 
 // Responsible for receiving the final message string (data + ec codewords)
 // and mounting the matrix.
