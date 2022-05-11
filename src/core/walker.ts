@@ -51,6 +51,11 @@ class Walker {
     this.y += 1;
   }
 
+  alternate(bit: "0" | "1"): "0" | "1" {
+    if (bit === "0") return "1";
+    return "0";
+  }
+
   move(instructions: MoveInstruction[]): void {
     for (let i = 0; i < instructions.length; i++) {
       const instruction = instructions[i];
