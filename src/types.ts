@@ -122,7 +122,11 @@ export interface Mounter {
     secondDir: Direction
   ) => void;
   placeSeparators: () => void;
-  placeTimingPattern: (x: number, y: number) => void;
+  placeTimingPattern: (
+    x: number,
+    y: number,
+    direction: "RIGHT" | "DOWN"
+  ) => void;
   placeTimingPatterns: () => void;
   walker: Walker;
   matrix: string[][];

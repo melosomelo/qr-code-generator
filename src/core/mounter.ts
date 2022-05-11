@@ -5,6 +5,17 @@ import Walker from "./walker";
 // Responsible for receiving the final message string (data + ec codewords)
 // and mounting the matrix.
 
+function printMatrix(matrix: string[][]): void {
+  for (let i = 0; i < matrix.length; i++) {
+    let str = "";
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (matrix[i][j] === "1") str += "#";
+      else str += " ";
+    }
+    console.log(str);
+  }
+}
+
 const MounterObj: Mounter = {
   matrix: [],
   walker: new Walker(),
@@ -19,12 +30,13 @@ const MounterObj: Mounter = {
     this.walker = Walker.walk(this.matrix);
     this.placeFunctionPatterns();
     console.log(message);
-    console.log(this.matrix);
+    printMatrix(this.matrix);
     return this.matrix;
   },
   placeFunctionPatterns() {
     this.placeFinderPatterns();
     this.placeSeparators();
+    this.placeTimingPatterns();
   },
   // The finder patterns are located on the top left, top right and bottom left of the QR Code.
   // They are composed of three concentric squares, with the first being a 7x7 dark square,
@@ -129,20 +141,22 @@ const MounterObj: Mounter = {
   },
   // Timing patterns are one module-wide pattern of alternating
   // black and white modules that connect the adjacent pairs of finder patterns.
-  placeTimingPattern(x, y) {
+  placeTimingPattern(x, y, direction) {
     const l = this.matrix.length;
     const lengthTimingPattern = l - 8 * 2;
     for (let i = 0; i < lengthTimingPattern; i++) {
       if (i % 2 === 0) {
-        this.matrix[y][x + i] = "1";
+        this.matrix[y][x] = "1";
       } else {
-        this.matrix[y][x + i] = "0";
+        this.matrix[y][x] = "0";
       }
+      if (direction === "DOWN") y += 1;
+      else x += 1;
     }
   },
   placeTimingPatterns() {
-    this.placeTimingPattern(8, 6);
-    this.placeTimingPattern(6, 8);
+    this.placeTimingPattern(8, 6, "RIGHT");
+    this.placeTimingPattern(6, 8, "DOWN");
   },
 };
 
