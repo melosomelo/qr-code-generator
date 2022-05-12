@@ -60,6 +60,7 @@ interface VersionInfo {
       ECBs: ECBInfo[];
     };
   };
+  alignmentPatternCenters: number[];
 }
 
 export interface Version {

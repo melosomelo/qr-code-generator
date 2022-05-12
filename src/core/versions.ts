@@ -40,6 +40,7 @@ const VersionObj: Version = {
           ECBs: [makeECB(26, 9)],
         },
       },
+      alignmentPatternCenters: [],
     },
     {
       version: 2,
@@ -57,6 +58,7 @@ const VersionObj: Version = {
           ECBs: [makeECB(44, 16)],
         },
       },
+      alignmentPatternCenters: [6, 18],
     },
     {
       version: 3,
@@ -74,6 +76,7 @@ const VersionObj: Version = {
           ECBs: [makeECB(35, 13), makeECB(35, 13)],
         },
       },
+      alignmentPatternCenters: [6, 22],
     },
     {
       version: 4,
@@ -96,6 +99,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 26],
     },
     {
       version: 5,
@@ -123,6 +127,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 30],
     },
     {
       version: 6,
@@ -155,6 +160,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 34],
     },
     {
       version: 7,
@@ -190,6 +196,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 22, 38],
     },
     {
       version: 8,
@@ -226,6 +233,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 24, 42],
     },
     {
       version: 9,
@@ -267,6 +275,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 26, 46],
     },
     {
       version: 10,
@@ -313,6 +322,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 28, 50],
     },
     {
       version: 11,
@@ -362,6 +372,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 30, 54],
     },
     {
       version: 12,
@@ -416,6 +427,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 32, 58],
     },
     {
       version: 13,
@@ -478,6 +490,7 @@ const VersionObj: Version = {
           ],
         },
       },
+      alignmentPatternCenters: [6, 34, 62],
     },
     {
       version: 14,
@@ -527,6 +540,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(11, 36, 12), ...makeECBs(5, 37, 13)],
         },
       },
+      alignmentPatternCenters: [6, 26, 46, 66],
     },
     {
       version: 15,
@@ -544,6 +558,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(11, 36, 12), ...makeECBs(7, 37, 13)],
         },
       },
+      alignmentPatternCenters: [6, 26, 48, 70],
     },
     {
       version: 16,
@@ -561,6 +576,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(3, 45, 15), ...makeECBs(13, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 26, 50, 74],
     },
     {
       version: 17,
@@ -578,6 +594,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(2, 42, 14), ...makeECBs(17, 43, 15)],
         },
       },
+      alignmentPatternCenters: [6, 30, 54, 78],
     },
     {
       version: 18,
@@ -595,6 +612,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(2, 42, 14), ...makeECBs(19, 43, 15)],
         },
       },
+      alignmentPatternCenters: [6, 30, 56, 82],
     },
     {
       version: 19,
@@ -612,6 +630,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(9, 39, 13), ...makeECBs(16, 40, 14)],
         },
       },
+      alignmentPatternCenters: [6, 30, 58, 86],
     },
     {
       version: 20,
@@ -629,6 +648,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(15, 43, 15), ...makeECBs(10, 44, 16)],
         },
       },
+      alignmentPatternCenters: [6, 34, 62, 90],
     },
     {
       version: 21,
@@ -646,6 +666,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(19, 46, 16), ...makeECBs(6, 47, 17)],
         },
       },
+      alignmentPatternCenters: [6, 28, 50, 72, 94],
     },
     {
       version: 22,
@@ -663,6 +684,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(34, 37, 12)],
         },
       },
+      alignmentPatternCenters: [6, 26, 50, 74, 98],
     },
     {
       version: 23,
@@ -680,6 +702,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(16, 45, 15), ...makeECBs(14, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 30, 54, 78, 102],
     },
     {
       version: 24,
@@ -697,6 +720,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(30, 46, 16), ...makeECBs(2, 47, 17)],
         },
       },
+      alignmentPatternCenters: [6, 28, 54, 80, 106],
     },
     {
       version: 25,
@@ -714,6 +738,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(22, 45, 15), ...makeECBs(13, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 32, 58, 84, 110],
     },
     {
       version: 26,
@@ -731,6 +756,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(33, 46, 16), ...makeECBs(4, 47, 17)],
         },
       },
+      alignmentPatternCenters: [6, 30, 58, 86, 114],
     },
     {
       version: 27,
@@ -748,6 +774,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(12, 45, 15), ...makeECBs(28, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 34, 62, 90, 118],
     },
     {
       version: 28,
@@ -765,6 +792,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(11, 45, 15), ...makeECBs(31, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 26, 50, 74, 98, 122],
     },
     {
       version: 29,
@@ -782,6 +810,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(19, 45, 15), ...makeECBs(26, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 30, 54, 78, 102, 126],
     },
     {
       version: 30,
@@ -799,6 +828,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(23, 45, 15), ...makeECBs(25, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 26, 52, 78, 104, 130],
     },
     {
       version: 31,
@@ -816,6 +846,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(23, 45, 15), ...makeECBs(28, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 30, 56, 82, 108, 134],
     },
     {
       version: 32,
@@ -833,6 +864,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(19, 45, 15), ...makeECBs(35, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 34, 60, 86, 112, 138],
     },
     {
       version: 33,
@@ -850,6 +882,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(11, 45, 15), ...makeECBs(46, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 30, 58, 86, 114, 142],
     },
     {
       version: 34,
@@ -867,6 +900,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(59, 46, 15), makeECB(47, 17)],
         },
       },
+      alignmentPatternCenters: [6, 34, 62, 90, 118, 146],
     },
     {
       version: 35,
@@ -884,6 +918,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(22, 45, 15), ...makeECBs(41, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 30, 54, 78, 102, 126, 150],
     },
     {
       version: 36,
@@ -901,6 +936,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(2, 45, 15), ...makeECBs(64, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 24, 50, 76, 102, 128, 154],
     },
     {
       version: 37,
@@ -918,6 +954,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(24, 45, 15), ...makeECBs(46, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 28, 54, 80, 106, 132, 158],
     },
     {
       version: 38,
@@ -935,6 +972,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(42, 45, 15), ...makeECBs(32, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 32, 58, 84, 110, 136, 162],
     },
     {
       version: 39,
@@ -952,6 +990,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(10, 45, 15), ...makeECBs(67, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 26, 54, 82, 110, 138, 166],
     },
     {
       version: 40,
@@ -969,6 +1008,7 @@ const VersionObj: Version = {
           ECBs: [...makeECBs(20, 45, 15), ...makeECBs(61, 46, 16)],
         },
       },
+      alignmentPatternCenters: [6, 30, 58, 86, 114, 142, 170],
     },
   ],
   willFit(dataLength, version, mode, ecLevel) {
