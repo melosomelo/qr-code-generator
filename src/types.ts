@@ -113,7 +113,7 @@ export interface ReedSolomon {
 
 export interface Mounter {
   mountMatrix: (message: string, version: number) => string[][];
-  placeFunctionPatterns: () => void;
+  placeFunctionPatterns: (version: number) => void;
   placeFinderPattern: (x: number, y: number) => void;
   placeFinderPatterns: () => void;
   placeSeparator: (
@@ -129,6 +129,8 @@ export interface Mounter {
     direction: "RIGHT" | "DOWN"
   ) => void;
   placeTimingPatterns: () => void;
+  placeAlignmentPatterns: (version: number) => void;
+  placeAlignmentPattern: (centerX: number, centerY: number) => void;
   walker: Walker;
   matrix: string[][];
 }

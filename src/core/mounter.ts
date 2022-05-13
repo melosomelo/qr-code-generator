@@ -28,15 +28,16 @@ const MounterObj: Mounter = {
       this.matrix.push(new Array<string>(l).fill(""));
     }
     this.walker = Walker.walk(this.matrix);
-    this.placeFunctionPatterns();
+    this.placeFunctionPatterns(version);
     console.log(message);
     printMatrix(this.matrix);
     return this.matrix;
   },
-  placeFunctionPatterns() {
+  placeFunctionPatterns(version) {
     this.placeFinderPatterns();
     this.placeSeparators();
     this.placeTimingPatterns();
+    this.placeAlignmentPatterns(version);
   },
   // The finder patterns are located on the top left, top right and bottom left of the QR Code.
   // They are composed of three concentric squares, with the first being a 7x7 dark square,
@@ -157,6 +158,83 @@ const MounterObj: Mounter = {
   placeTimingPatterns() {
     this.placeTimingPattern(8, 6, "RIGHT");
     this.placeTimingPattern(6, 8, "DOWN");
+  },
+  // Alignment patterns are composed of three concentric squares.
+  // The first one is a 5x5 black square. The second one is a 3x3  white square
+  // and the last one is a single black module.
+  placeAlignmentPattern(centerX, centerY) {
+    // First, we need to check if they're not intersecting any of the three finder patterns.
+    const l = this.matrix.length - 1;
+    const isIntersectingTopLeftFinderPattern =
+      centerX - 2 <= 6 && centerY - 2 <= 6;
+    const isIntersectingTopRightFinderPattern =
+      centerX + 2 >= l - 6 && centerX + 2 <= l && centerY - 2 <= 6;
+    const isIntersectingBottomLeftFinderPattern =
+      centerX - 2 <= 6 && centerY + 2 >= l - 6 && centerY + 2 <= l;
+    if (
+      isIntersectingBottomLeftFinderPattern ||
+      isIntersectingTopLeftFinderPattern ||
+      isIntersectingTopRightFinderPattern
+    )
+      return;
+    // the 1x1 center module
+    this.walker.fill(centerX, centerY, "1");
+    // the 3x3 white square
+    this.walker.startingAt(centerX - 1, centerY - 1).move([
+      {
+        fillFirst: true,
+        fillWith: "0",
+        direction: "RIGHT",
+        times: 2,
+      },
+      {
+        fillWith: "0",
+        direction: "DOWN",
+        times: 2,
+      },
+      {
+        fillWith: "0",
+        direction: "LEFT",
+        times: 2,
+      },
+      {
+        fillWith: "0",
+        direction: "UP",
+        times: 2,
+      },
+    ]);
+    this.walker.startingAt(centerX - 2, centerY - 2).move([
+      {
+        fillFirst: true,
+        fillWith: "1",
+        direction: "RIGHT",
+        times: 4,
+      },
+      {
+        fillWith: "1",
+        direction: "DOWN",
+        times: 4,
+      },
+      {
+        fillWith: "1",
+        direction: "LEFT",
+        times: 4,
+      },
+      {
+        fillWith: "1",
+        direction: "UP",
+        times: 4,
+      },
+    ]);
+  },
+  placeAlignmentPatterns(version) {
+    const possibleCenters =
+      Version.versions[version - 1].alignmentPatternCenters;
+    for (let i = 0; i < possibleCenters.length; i++) {
+      for (let j = 0; j < possibleCenters.length; j++) {
+        this.placeAlignmentPattern(possibleCenters[i], possibleCenters[j]);
+      }
+    }
   },
 };
 

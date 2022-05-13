@@ -152,7 +152,7 @@ const generateQRCode: GenerateQRCode = (data, options) => {
 
 generateQRCode("HELLO WORLD", {
   errorCorrectionDetectionLevel: "M",
-  version: 1,
+  version: 7,
 });
 
 export default generateQRCode;
