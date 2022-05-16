@@ -1,5 +1,9 @@
 import type { MoveInstruction } from "../types";
 
+// Class that provides some abstractions to the process of iterating
+// through the QR Code matrix and filling its modules.
+// It makes the code in mounter.ts (which actually holds the logic for the movements done)
+// much more declarative and easier to understand.
 export default class Walker {
   private matrix: string[][] = new Array<string[]>(0).fill(
     new Array<string>(0)
