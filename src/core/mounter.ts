@@ -236,6 +236,10 @@ const MounterObj: Mounter = {
       }
     }
   },
+  // The info module placement happens after the placement of the message.
+  // Because of this, it's necessary to reserve these modules, so that
+  // when the message is being placed, it doesn't invade these spaces.
+  reserveInfoModules(version) {},
 };
 
 export default MounterObj;

@@ -43,6 +43,20 @@ export default class Walker {
     this.matrix[y][x] = fill;
   }
 
+  public fillRegion(
+    topLeftX: number,
+    topLeftY: number,
+    width: number,
+    height: number,
+    fillWith: "0" | "1"
+  ): void {
+    for (let i = 0; i < height; i++) {
+      for (let j = 0; j < width; j++) {
+        this.matrix[topLeftY + i][topLeftX + j] = fillWith;
+      }
+    }
+  }
+
   public move(instructions: MoveInstruction[]): void {
     for (let i = 0; i < instructions.length; i++) {
       const instruction = instructions[i];
