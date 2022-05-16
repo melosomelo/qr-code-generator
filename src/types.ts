@@ -79,6 +79,8 @@ export interface Version {
     mode: EncodingMode
   ) => number;
   amountInfoModules: (version: number) => number;
+  amountVersionInfoModules: (version: number) => number;
+  amountFormatInfoModules: (version: number) => number;
   amountFunctionPatternModules: (version: number) => number;
   amountDataModules: (version: number) => number;
   amountRealDataModules: (
@@ -131,6 +133,7 @@ export interface Mounter {
   placeTimingPatterns: () => void;
   placeAlignmentPatterns: (version: number) => void;
   placeAlignmentPattern: (centerX: number, centerY: number) => void;
+  reserveInfoAndFormatAreas: (version: number) => void;
   walker: Walker;
   matrix: string[][];
 }

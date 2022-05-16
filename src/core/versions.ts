@@ -1094,8 +1094,17 @@ const VersionObj: Version = {
     return 46;
   },
   amountInfoModules(version) {
-    if (version >= 1 && version < 7) return 31;
-    return 67;
+    return (
+      this.amountFormatInfoModules(version) +
+      this.amountVersionInfoModules(version)
+    );
+  },
+  amountFormatInfoModules(version) {
+    return 31;
+  },
+  amountVersionInfoModules(version) {
+    if (version >= 1 && version <= 6) return 0;
+    return 36;
   },
   amountTotalModules(version) {
     const l = this.length(version);
