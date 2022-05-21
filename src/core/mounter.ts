@@ -246,6 +246,8 @@ const MounterObj: Mounter = {
     console.log(version);
     if (Version.amountVersionInfoModules(version) > 0) {
       // place the version info modules
+      this.walker.fillRegion(0, l - 10, 6, 3, "1");
+      this.walker.fillRegion(l - 10, 0, 3, 6, "1");
     }
     // place the format info modules
     this.walker
