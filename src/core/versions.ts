@@ -1099,7 +1099,7 @@ const VersionObj: Version = {
       this.amountVersionInfoModules(version)
     );
   },
-  amountFormatInfoModules(version) {
+  amountFormatInfoModules() {
     return 31;
   },
   amountVersionInfoModules(version) {

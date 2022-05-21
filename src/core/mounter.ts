@@ -20,6 +20,7 @@ const MounterObj: Mounter = {
   matrix: [],
   walker: new Walker(),
   mountMatrix(message, version) {
+    console.log(message.length);
     // First, we need to know the total size of the qr code symbol.
     const l = Version.length(version);
     // Initialize the empty matrix.
@@ -29,6 +30,7 @@ const MounterObj: Mounter = {
     }
     this.walker = Walker.walk(this.matrix);
     this.placeFunctionPatterns(version);
+    this.reserveInfoModules(version);
     console.log(message);
     printMatrix(this.matrix);
     return this.matrix;
@@ -239,7 +241,38 @@ const MounterObj: Mounter = {
   // The info module placement happens after the placement of the message.
   // Because of this, it's necessary to reserve these modules, so that
   // when the message is being placed, it doesn't invade these spaces.
-  reserveInfoModules(version) {},
+  reserveInfoModules(version) {
+    const l = this.matrix.length - 1;
+    console.log(version);
+    if (Version.amountVersionInfoModules(version) > 0) {
+      // place the version info modules
+    }
+    // place the format info modules
+    this.walker
+      .startingAt(l, 8)
+      .move([{ fillFirst: true, fillWith: "1", direction: "LEFT", times: 7 }]);
+    this.walker.startingAt(8, l).move([
+      {
+        fillFirst: true,
+        fillWith: "1",
+        direction: "UP",
+        times: 6,
+      },
+    ]);
+    this.walker.startingAt(8, 0).move([
+      {
+        direction: "DOWN",
+        times: 8,
+        fillWith: "1",
+        fillFirst: true,
+      },
+      {
+        direction: "LEFT",
+        times: 8,
+        fillWith: "1",
+      },
+    ]);
+  },
 };
 
 export default MounterObj;
