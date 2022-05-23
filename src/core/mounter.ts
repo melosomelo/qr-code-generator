@@ -31,6 +31,7 @@ const MounterObj: Mounter = {
     this.walker = Walker.walk(this.matrix);
     this.placeFunctionPatterns(version);
     this.reserveInfoModules(version);
+    this.placeMessage(message, version);
     console.log(message);
     printMatrix(this.matrix);
     return this.matrix;
@@ -274,6 +275,66 @@ const MounterObj: Mounter = {
         fillWith: "1",
       },
     ]);
+  },
+  placeMessage(message, version) {
+    /*
+    The movement of placing the message on the QR Code Matrix
+    depends on the current direction (upwards or downwards).
+    If it's upwards, then this is the order:
+    | 4 | 3 |
+    | 2 | 1 |
+    If it's downwards, then this is the order:
+    | 2 | 1 |
+    | 4 | 3 |
+    */
+    let currentDirection: "UP" | "DOWN" = "UP";
+    let amountModulesPlaced = 0;
+    const l = Version.length(version);
+    // We start at the bottom right corner.
+    let x = l - 1;
+    let y = l - 1;
+    while (amountModulesPlaced < message.length) {
+      // Starting at number 1 (bottom right or top right module),
+      // we first check to see if it is already filled.
+      if (this.matrix[y][x] === "") {
+        this.matrix[y][x] = message[y * l + x];
+        amountModulesPlaced += 1;
+      }
+      // On both possible scenarios, we then move left to number 2
+      // and check it.
+      x -= 1;
+      if (this.matrix[y][x] === "") {
+        this.matrix[y][x] = message[y * l + x];
+        amountModulesPlaced += 1;
+      }
+      // To go to number 3, we need to make a "jump".
+      // After the jump, number 3 becomes the new number 1.
+      // If we're going UP, then this jump is going up and then right.
+      // If we're going DOWN, then it is going down and the right.
+      // Before making a jump, we need to make sure we're not on the edges
+      // of the QR Code Matrix. If we are, then we need to switch directions.
+      if (currentDirection === "UP") {
+        if (y !== 0) {
+          // Going up and then right.
+          y -= 1;
+          x += 1;
+        } else {
+          // If we need to switch directions, we need to
+          // go to one cell left so that we start at the right place.
+          currentDirection = "DOWN";
+          x -= 1;
+        }
+      } else {
+        if (y !== l - 1) {
+          // Going down and then right.
+          y += 1;
+          x += 1;
+        } else {
+          currentDirection = "UP";
+          x -= 1;
+        }
+      }
+    }
   },
 };
 

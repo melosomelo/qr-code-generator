@@ -134,6 +134,7 @@ export interface Mounter {
   placeAlignmentPatterns: (version: number) => void;
   placeAlignmentPattern: (centerX: number, centerY: number) => void;
   reserveInfoModules: (version: number) => void;
+  placeMessage: (message: string, version: number) => void;
   walker: Walker;
   matrix: string[][];
 }
