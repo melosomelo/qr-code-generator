@@ -304,7 +304,7 @@ const MounterObj: Mounter = {
       // and check it.
       x -= 1;
       if (this.matrix[y][x] === "") {
-        this.matrix[y][x] = message[y * l + x];
+        this.matrix[y][x] = message[amountModulesPlaced];
         amountModulesPlaced += 1;
       }
       // To go to number 3, we need to make a "jump".
