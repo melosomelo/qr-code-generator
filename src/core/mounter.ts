@@ -244,7 +244,6 @@ const MounterObj: Mounter = {
   // when the message is being placed, it doesn't invade these spaces.
   reserveInfoModules(version) {
     const l = this.matrix.length - 1;
-    console.log(version);
     if (Version.amountVersionInfoModules(version) > 0) {
       // place the version info modules
       this.walker.fillRegion(0, l - 10, 6, 3, "1");
@@ -290,7 +289,6 @@ const MounterObj: Mounter = {
     let currentDirection: "UP" | "DOWN" = "UP";
     let amountModulesPlaced = 0;
     const l = Version.length(version);
-    console.log(`LENGTH is ${l}`);
     // We start at the bottom right corner.
     let x = l - 1;
     let y = l - 1;
