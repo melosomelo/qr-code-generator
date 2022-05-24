@@ -280,7 +280,7 @@ const MounterObj: Mounter = {
     /*
     The movement of placing the message on the QR Code Matrix
     depends on the current direction (upwards or downwards).
-    If it's upwards, then this is the order:
+    If it's upwards, then this is the order
     | 4 | 3 |
     | 2 | 1 |
     If it's downwards, then this is the order:
@@ -290,20 +290,26 @@ const MounterObj: Mounter = {
     let currentDirection: "UP" | "DOWN" = "UP";
     let amountModulesPlaced = 0;
     const l = Version.length(version);
+    console.log(`LENGTH is ${l}`);
     // We start at the bottom right corner.
     let x = l - 1;
     let y = l - 1;
     while (amountModulesPlaced < message.length) {
+      // If x == 6, then we're at the vertical timing pattern column.
+      // We need to skip this column, idk why.
+      if (x === 6) {
+        x -= 1;
+      }
       // Starting at number 1 (bottom right or top right module),
       // we first check to see if it is already filled.
       if (this.matrix[y][x] === "") {
-        this.matrix[y][x] = message[y * l + x];
+        this.matrix[y][x] = message[amountModulesPlaced];
         amountModulesPlaced += 1;
       }
       // On both possible scenarios, we then move left to number 2
       // and check it.
       x -= 1;
-      if (this.matrix[y][x] === "") {
+      if (this.matrix[y][x] === "" && amountModulesPlaced < message.length) {
         this.matrix[y][x] = message[amountModulesPlaced];
         amountModulesPlaced += 1;
       }
