@@ -1,6 +1,7 @@
 import type { Mounter } from "../types";
 import Version from "./versions";
 import Walker from "./walker";
+import Masker from "./masker";
 
 // Responsible for receiving the final message string (data + ec codewords)
 // and mounting the matrix.
@@ -20,7 +21,6 @@ const MounterObj: Mounter = {
   matrix: [],
   walker: new Walker(),
   mountMatrix(message, version) {
-    console.log(message.length);
     // First, we need to know the total size of the qr code symbol.
     const l = Version.length(version);
     // Initialize the empty matrix.
@@ -31,8 +31,8 @@ const MounterObj: Mounter = {
     this.walker = Walker.walk(this.matrix);
     this.placeFunctionPatterns(version);
     this.reserveInfoModules(version);
+    Masker.initializeMasks(this.matrix);
     this.placeMessage(message, version);
-    console.log(message);
     printMatrix(this.matrix);
     return this.matrix;
   },
@@ -277,14 +277,14 @@ const MounterObj: Mounter = {
   },
   placeMessage(message, version) {
     /*
-    The movement of placing the message on the QR Code Matrix
-    depends on the current direction (upwards or downwards).
-    If it's upwards, then this is the order
-    | 4 | 3 |
-    | 2 | 1 |
-    If it's downwards, then this is the order:
-    | 2 | 1 |
-    | 4 | 3 |
+      The movement of placing the message on the QR Code Matrix
+      depends on the current direction (upwards or downwards).
+      If it's upwards, then this is the order
+      | 4 | 3 |
+      | 2 | 1 |
+      If it's downwards, then this is the order:
+      | 2 | 1 |
+      | 4 | 3 |
     */
     let currentDirection: "UP" | "DOWN" = "UP";
     let amountModulesPlaced = 0;
@@ -302,6 +302,11 @@ const MounterObj: Mounter = {
       // we first check to see if it is already filled.
       if (this.matrix[y][x] === "") {
         this.matrix[y][x] = message[amountModulesPlaced];
+        // While placing the message, we already create the different masks.
+        // We do this now because it's the best time to do so:
+        // the masks should only be applied to the data bits, not function patterns
+        // nor info/format modules.
+        Masker.applyMask(x, y, message[amountModulesPlaced] as "0" | "1");
         amountModulesPlaced += 1;
       }
       // On both possible scenarios, we then move left to number 2
@@ -309,6 +314,7 @@ const MounterObj: Mounter = {
       x -= 1;
       if (this.matrix[y][x] === "" && amountModulesPlaced < message.length) {
         this.matrix[y][x] = message[amountModulesPlaced];
+        Masker.applyMask(x, y, message[amountModulesPlaced] as "0" | "1");
         amountModulesPlaced += 1;
       }
       // To go to number 3, we need to make a "jump".
