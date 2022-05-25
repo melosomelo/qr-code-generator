@@ -22,11 +22,11 @@ const Masker: MaskerType = {
       matrix: [],
     },
     {
-      rule: (x, _) => x % 2 === 0,
+      rule: (_, y) => y % 2 === 0,
       matrix: [],
     },
     {
-      rule: (_, y) => y % 3 === 0,
+      rule: (x, _) => x % 3 === 0,
       matrix: [],
     },
     {
@@ -34,7 +34,7 @@ const Masker: MaskerType = {
       matrix: [],
     },
     {
-      rule: (x, y) => ((x % 2) + (y % 3)) % 2 === 0,
+      rule: (x, y) => ((y % 2) + (x % 3)) % 2 === 0,
       matrix: [],
     },
     {
