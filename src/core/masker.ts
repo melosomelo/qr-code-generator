@@ -15,6 +15,7 @@ interface MaskerType {
   penaltyOne: (mask: Mask) => number;
   penaltyTwo: (mask: Mask) => number;
   penaltyThree: (mask: Mask) => number;
+  penaltyFour: (mask: Mask) => number;
   calculateBestMask: () => string[][];
 }
 
@@ -188,6 +189,22 @@ const Masker: MaskerType = {
       }
     }
     return result;
+  },
+  // The fourth penalty says to first calculate the percentage of dark modules
+  // in the symbol, to then calculate how much that differs (absolutely) from 50%.
+  // Then, for each 5% deviation, we add 10 points.
+  penaltyFour(mask) {
+    const totalAmountOfModules = mask.matrix.length * mask.matrix.length;
+    let amountDarkModules = 0; // amount of modules equal to 1
+    for (let i = 0; i < mask.matrix.length; i++) {
+      for (let j = 0; j < mask.matrix.length; j++) {
+        if (mask.matrix[i][j] === "1") amountDarkModules += 1;
+      }
+    }
+    const percentageOfDarkModules = Math.floor(
+      amountDarkModules / totalAmountOfModules
+    );
+    return Math.floor(Math.abs(percentageOfDarkModules - 50) / 5) * 10;
   },
   calculatePenalties(mask) {
     return this.penaltyOne(mask) + this.penaltyTwo(mask);
