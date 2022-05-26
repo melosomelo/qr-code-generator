@@ -12,17 +12,6 @@ describe("Masker", () => {
     it.each([
       [createMaskFromString(`000\n000\n000`), 0],
       [createMaskFromString(`00000\n00000\n00000\n00000\n00000`), 30],
-      [
-        createMaskFromString(
-          `000000
-      000000
-      000000
-      000000
-      000000
-      000000`
-        ),
-        36,
-      ],
     ])("%#", (matrix, expectedValue) => {
       expect(Masker.penaltyOne(matrix)).toBe(expectedValue);
     });

@@ -88,34 +88,47 @@ const Masker: MaskerType = {
     let counter = 0;
     let currentBit = mask.matrix[0][0];
     let result = 0;
-    // first, we check every row
+    // First, we check horizontally.
     for (let i = 0; i < mask.matrix.length; i++) {
-      const row = mask.matrix[i];
-      for (let j = 0; j < row.length; j++) {
-        if (row[j] === currentBit) {
+      for (let j = 0; j < mask.matrix.length; j++) {
+        // Increase the counter.
+        if (mask.matrix[i][j] === currentBit) {
           counter += 1;
         } else {
-          if (counter >= 5) result += 3 + Math.max(0, counter - 5);
-          currentBit = row[j];
+          // If not, then we need to check if the broken sequence so far amounts
+          // to at least 5 equal modules.
+          if (counter >= 5) {
+            result += 3 + Math.max(0, counter - 5);
+          }
           counter = 1;
+          currentBit = mask.matrix[i][j];
         }
       }
-      if (counter >= 5) result += 3 + Math.max(0, counter - 5);
+      // After finishing a line, we need to check if the result and reset
+      // the counter.
+      if (counter >= 5) {
+        result += 3 + Math.max(0, counter - 5);
+      }
       counter = 0;
     }
+    counter = 0;
     currentBit = mask.matrix[0][0];
-    // then, we check every column
+    // Then, we check vertically.
     for (let i = 0; i < mask.matrix.length; i++) {
       for (let j = 0; j < mask.matrix.length; j++) {
         if (mask.matrix[j][i] === currentBit) {
           counter += 1;
         } else {
-          if (counter >= 5) result += 3 + Math.max(0, counter - 5);
-          currentBit = mask.matrix[j][i];
+          if (counter >= 5) {
+            result += 3 + Math.max(0, counter - 5);
+          }
           counter = 1;
+          currentBit = mask.matrix[j][i];
         }
       }
-      if (counter >= 5) result += 3 + Math.max(0, counter - 5);
+      if (counter >= 5) {
+        result += 3 + Math.max(0, counter - 5);
+      }
       counter = 0;
     }
     return result;
