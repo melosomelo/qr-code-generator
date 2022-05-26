@@ -15,6 +15,18 @@ import encoders from "./encoders";
 import toBinaryString from "../util/toBinaryString";
 import RS from "./math/reedSolomon";
 import Mounter from "./mounter";
+import Masker from "./masker";
+
+function printMatrix(matrix: string[][]): void {
+  for (let i = 0; i < matrix.length; i++) {
+    let str = "";
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (matrix[i][j] === "1") str += "#";
+      else str += " ";
+    }
+    console.log(str);
+  }
+}
 
 function isNumericChar(byte: number): boolean {
   return byte >= 48 && byte <= 57;
@@ -142,7 +154,9 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   for (let i = 0; i < amountRemainderBits; i++) {
     finalMessage += "0";
   }
-  Mounter.mountMatrix(finalMessage, version);
+  Mounter.mountMessageMatrix(finalMessage, version);
+  const bestMask = Masker.calculateBestMask();
+  printMatrix(bestMask.matrix);
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",

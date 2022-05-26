@@ -114,7 +114,7 @@ export interface ReedSolomon {
 }
 
 export interface Mounter {
-  mountMatrix: (message: string, version: number) => string[][];
+  mountMessageMatrix: (message: string, version: number) => string[][];
   placeFunctionPatterns: (version: number) => void;
   placeFinderPattern: (x: number, y: number) => void;
   placeFinderPatterns: () => void;

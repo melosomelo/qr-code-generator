@@ -5,7 +5,7 @@ import Masker from "./masker";
 
 // Responsible for receiving the final message string (data + ec codewords)
 // and mounting the matrix.
-
+/*
 function printMatrix(matrix: string[][]): void {
   for (let i = 0; i < matrix.length; i++) {
     let str = "";
@@ -16,11 +16,11 @@ function printMatrix(matrix: string[][]): void {
     console.log(str);
   }
 }
-
+*/
 const MounterObj: Mounter = {
   matrix: [],
   walker: new Walker(),
-  mountMatrix(message, version) {
+  mountMessageMatrix(message, version) {
     // First, we need to know the total size of the qr code symbol.
     const l = Version.length(version);
     // Initialize the empty matrix.
@@ -33,7 +33,6 @@ const MounterObj: Mounter = {
     this.reserveInfoModules(version);
     Masker.initializeMasks(this.matrix);
     this.placeMessage(message, version);
-    printMatrix(this.matrix);
     return this.matrix;
   },
   placeFunctionPatterns(version) {

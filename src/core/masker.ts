@@ -3,6 +3,7 @@ type MaskRule = (x: number, y: number) => boolean;
 interface Mask {
   rule: MaskRule;
   matrix: string[][];
+  formatBitPattern: string;
 }
 
 interface MaskerType {
@@ -16,7 +17,7 @@ interface MaskerType {
   penaltyTwo: (mask: Mask) => number;
   penaltyThree: (mask: Mask) => number;
   penaltyFour: (mask: Mask) => number;
-  calculateBestMask: () => string[][];
+  calculateBestMask: () => Mask;
 }
 
 // Object responsible applying masks to the original message matrix
@@ -26,34 +27,42 @@ const Masker: MaskerType = {
     {
       rule: (x, y) => (x + y) % 2 === 0,
       matrix: [],
+      formatBitPattern: "000",
     },
     {
       rule: (_, y) => y % 2 === 0,
       matrix: [],
+      formatBitPattern: "001",
     },
     {
       rule: (x, _) => x % 3 === 0,
       matrix: [],
+      formatBitPattern: "010",
     },
     {
       rule: (x, y) => (x + y) % 3 === 0,
       matrix: [],
+      formatBitPattern: "011",
     },
     {
       rule: (x, y) => ((y % 2) + (x % 3)) % 2 === 0,
       matrix: [],
+      formatBitPattern: "100",
     },
     {
       rule: (x, y) => ((x * y) % 2) + ((x * y) % 3) === 0,
       matrix: [],
+      formatBitPattern: "101",
     },
     {
       rule: (x, y) => (((x * y) % 2) + ((x * y) % 3)) % 2 === 0,
       matrix: [],
+      formatBitPattern: "110",
     },
     {
       rule: (x, y) => (((x + y) % 2) + ((x + y) % 3)) % 2 === 0,
       matrix: [],
+      formatBitPattern: "111",
     },
   ],
   // Copying the message matrix after placing the
@@ -207,7 +216,12 @@ const Masker: MaskerType = {
     return Math.floor(Math.abs(percentageOfDarkModules - 50) / 5) * 10;
   },
   calculatePenalties(mask) {
-    return this.penaltyOne(mask) + this.penaltyTwo(mask);
+    return (
+      this.penaltyOne(mask) +
+      this.penaltyTwo(mask) +
+      this.penaltyThree(mask) +
+      this.penaltyFour(mask)
+    );
   },
   calculateBestMask() {
     const results: Array<{ mask: Mask; result: number }> = [];
@@ -218,7 +232,7 @@ const Masker: MaskerType = {
       });
     });
     results.sort((a, b) => a.result - b.result);
-    return results[0].mask.matrix;
+    return results[0].mask;
   },
 };
 
