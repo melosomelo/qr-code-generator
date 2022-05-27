@@ -1,7 +1,13 @@
-import type { Direction, Bit, Mask } from "../types";
+import type {
+  Direction,
+  Bit,
+  Mask,
+  ErrorCorrectionDetectionLevel,
+} from "../types";
 import Version from "./versions";
 import Walker from "./walker";
 import xor from "../util/xor";
+import EC_INDICATORS from "../util/ecLevelIndicators";
 
 /*
 function printMatrix(matrix: string[][]): void {
@@ -62,10 +68,22 @@ const MounterObj = {
       formatBitPattern: "111",
     },
   ] as Mask[],
+  // Format info is made of 15 bits: 5 of which are data bits and 10 are ec bits.
+  // The first two bits are indicators of the ec level chosen, and the next 3
+  // are indicators of which mask was chosen.
+  placeFormatInfo(mask: Mask, ecLevel: ErrorCorrectionDetectionLevel): void {
+    const initialBitStream = `${EC_INDICATORS[ecLevel]}${mask.formatBitPattern}`
+      .split("")
+      .map((b) => parseInt(b, 10));
+    console.log(initialBitStream);
+  },
   initializeMasks(): void {
     // Each mask initially is a copy of the current state of the matrix.
     for (let i = 0; i < this.masks.length; i++) {
       this.masks[i].matrix = [...this.matrix];
+      for (let j = 0; j < this.masks[i].matrix.length; j++) {
+        this.masks[i].matrix[j] = [...this.matrix[j]];
+      }
     }
   },
   applyMask(x: number, y: number, bit: Bit): void {
@@ -211,7 +229,11 @@ const MounterObj = {
       this.penaltyFour(mask)
     );
   },
-  mountQRCodeMatrix(message: string, version: number): string[][] {
+  mountQRCodeMatrix(
+    message: string,
+    version: number,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ): string[][] {
     // First, we need to know the total size of the qr code symbol.
     const l = Version.length(version);
     // Initialize the empty matrix.
@@ -234,6 +256,7 @@ const MounterObj = {
     );
     results.sort((a, b) => a.result - b.result);
     const bestMask = results[0].mask;
+    this.placeFormatInfo(bestMask, ecLevel);
     // Now we have to place the format and version information
     return this.matrix;
   },

@@ -78,7 +78,7 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   for (let i = 0; i < amountRemainderBits; i++) {
     finalMessage += "0";
   }
-  const matrix = Mounter.mountQRCodeMatrix(finalMessage, version);
+  const matrix = Mounter.mountQRCodeMatrix(finalMessage, version, ecLevel);
   printMatrix(matrix);
   return new QRCode(inputBuffer, {
     mode,
@@ -88,7 +88,7 @@ const generateQRCode: GenerateQRCode = (data, options) => {
 };
 
 generateQRCode("HELLO WORLD", {
-  errorCorrectionDetectionLevel: "M",
+  errorCorrectionDetectionLevel: "L",
   version: 2,
 });
 
