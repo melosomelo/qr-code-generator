@@ -3,7 +3,7 @@ import MODE_INDICATORS from "../util/modeIndicators";
 import type {
   EncodingMode,
   ErrorCorrectionDetectionLevel,
-  GenerateQRCode,
+  GenerateQRCodeOptions,
 } from "../types";
 import assert from "../util/assert";
 import analyzeData from "../util/analyzeData";
@@ -14,7 +14,9 @@ import encoders from "./encoders";
 import toBinaryString from "../util/toBinaryString";
 import RS from "./math/reedSolomon";
 import Mounter from "./mounter";
+import toImage from "./output/image";
 
+/*
 function printMatrix(matrix: string[][]): void {
   for (let i = 0; i < matrix.length; i++) {
     let str = "";
@@ -25,8 +27,12 @@ function printMatrix(matrix: string[][]): void {
     console.log(str);
   }
 }
+*/
 
-const generateQRCode: GenerateQRCode = (data, options) => {
+const generateQRCode = async (
+  data: string,
+  options?: GenerateQRCodeOptions
+): Promise<QRCode> => {
   // So far, only support for ISO/IEC 8859-1 (latin1).
   const inputBuffer = Buffer.from(data, "latin1");
   const mode: EncodingMode = options?.mode ?? analyzeData(inputBuffer);
@@ -79,17 +85,18 @@ const generateQRCode: GenerateQRCode = (data, options) => {
     finalMessage += "0";
   }
   const matrix = Mounter.mountQRCodeMatrix(finalMessage, version, ecLevel);
-  printMatrix(matrix);
+  await toImage(matrix);
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",
     version: 40,
   });
 };
-
-generateQRCode("HELLO WORLD", {
-  errorCorrectionDetectionLevel: "L",
-  version: 2,
-});
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+(async () => {
+  await generateQRCode("https://google.com", {
+    version: 2,
+  });
+})();
 
 export default generateQRCode;

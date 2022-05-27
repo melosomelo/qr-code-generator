@@ -1,5 +1,3 @@
-import QRCode from "./core/qrcode";
-
 export type ErrorCorrectionDetectionLevel = "L" | "M" | "Q" | "H";
 
 export type Bit = "0" | "1";
@@ -11,11 +9,6 @@ export interface GenerateQRCodeOptions {
   errorCorrectionDetectionLevel?: ErrorCorrectionDetectionLevel;
   version?: number;
 }
-
-export type GenerateQRCode = (
-  data: string,
-  options?: GenerateQRCodeOptions
-) => QRCode;
 
 export interface Encoder {
   encode: (data: string) => string;
