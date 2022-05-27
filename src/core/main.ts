@@ -157,6 +157,7 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   Mounter.mountMessageMatrix(finalMessage, version);
   const bestMask = Masker.calculateBestMask();
   printMatrix(bestMask.matrix);
+  Mounter.placeFormatAndVersionInfo(bestMask, ecLevel);
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",

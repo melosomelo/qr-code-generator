@@ -1,10 +1,4 @@
-type MaskRule = (x: number, y: number) => boolean;
-
-interface Mask {
-  rule: MaskRule;
-  matrix: string[][];
-  formatBitPattern: string;
-}
+import type { Mask } from "../types";
 
 interface MaskerType {
   masks: Mask[];

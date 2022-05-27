@@ -135,6 +135,11 @@ export interface Mounter {
   placeAlignmentPattern: (centerX: number, centerY: number) => void;
   reserveInfoModules: (version: number) => void;
   placeMessage: (message: string, version: number) => void;
+  placeFormatAndVersionInfo: (
+    mask: Mask,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ) => void;
+  placeFormatInfo: (mask: Mask, ecLevel: ErrorCorrectionDetectionLevel) => void;
   walker: Walker;
   matrix: string[][];
 }
@@ -151,3 +156,10 @@ export interface MoveInstruction {
 }
 
 export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
+
+type MaskRule = (x: number, y: number) => boolean;
+export interface Mask {
+  rule: MaskRule;
+  matrix: string[][];
+  formatBitPattern: string;
+}

@@ -1,7 +1,11 @@
-import type { Mounter } from "../types";
+import type {
+  Mounter,
+  ErrorCorrectionDetectionLevel as EcLevel,
+} from "../types";
 import Version from "./versions";
 import Walker from "./walker";
 import Masker from "./masker";
+import Polynomial from "./math/polynomial";
 
 // Responsible for receiving the final message string (data + ec codewords)
 // and mounting the matrix.
@@ -17,6 +21,13 @@ function printMatrix(matrix: string[][]): void {
   }
 }
 */
+
+const errorCorrectionCodeIndicators: { [k in EcLevel]: string } = {
+  L: "01",
+  M: "00",
+  Q: "11",
+  H: "10",
+};
 const MounterObj: Mounter = {
   matrix: [],
   walker: new Walker(),
@@ -345,6 +356,13 @@ const MounterObj: Mounter = {
       }
     }
   },
+  placeFormatAndVersionInfo(mask, ecLevel) {
+    this.placeFormatInfo(mask, ecLevel);
+  },
+  // The format info is made of a 15 bit sequence, with the 5 initial ones
+  // being comprised of the ecLevel indicator and the mask indicator.
+  // Then, we must calculate 10 error correction bits using the (15,5) BCH code.
+  placeFormatInfo(mask, ecLevel) {},
 };
 
 export default MounterObj;
