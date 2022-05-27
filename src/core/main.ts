@@ -14,7 +14,6 @@ import encoders from "./encoders";
 import toBinaryString from "../util/toBinaryString";
 import RS from "./math/reedSolomon";
 import Mounter from "./mounter";
-import Masker from "./masker";
 
 function printMatrix(matrix: string[][]): void {
   for (let i = 0; i < matrix.length; i++) {
@@ -79,9 +78,8 @@ const generateQRCode: GenerateQRCode = (data, options) => {
   for (let i = 0; i < amountRemainderBits; i++) {
     finalMessage += "0";
   }
-  Mounter.mountMessageMatrix(finalMessage, version);
-  const bestMask = Masker.calculateBestMask();
-  printMatrix(bestMask.matrix);
+  const matrix = Mounter.mountQRCodeMatrix(finalMessage, version);
+  printMatrix(matrix);
   return new QRCode(inputBuffer, {
     mode,
     errorCorrectionDetectionLevel: "H",

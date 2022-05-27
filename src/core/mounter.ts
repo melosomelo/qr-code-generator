@@ -1,10 +1,8 @@
-import type { Direction, Bit } from "../types";
+import type { Direction, Bit, Mask } from "../types";
 import Version from "./versions";
 import Walker from "./walker";
-import Masker from "./masker";
+import xor from "../util/xor";
 
-// Responsible for receiving the final message string (data + ec codewords)
-// and mounting the matrix.
 /*
 function printMatrix(matrix: string[][]): void {
   for (let i = 0; i < matrix.length; i++) {
@@ -18,10 +16,202 @@ function printMatrix(matrix: string[][]): void {
 }
 */
 
+// Responsible for mounting the QR Code matrix.
 const MounterObj = {
   matrix: [] as string[][],
   walker: new Walker(),
-  mountMessageMatrix(message: string, version: number): string[][] {
+  masks: [
+    {
+      rule: (x, y) => (x + y) % 2 === 0,
+      matrix: [],
+      formatBitPattern: "000",
+    },
+    {
+      rule: (_, y) => y % 2 === 0,
+      matrix: [],
+      formatBitPattern: "001",
+    },
+    {
+      rule: (x, _) => x % 3 === 0,
+      matrix: [],
+      formatBitPattern: "010",
+    },
+    {
+      rule: (x, y) => (x + y) % 3 === 0,
+      matrix: [],
+      formatBitPattern: "011",
+    },
+    {
+      rule: (x, y) => ((y % 2) + (x % 3)) % 2 === 0,
+      matrix: [],
+      formatBitPattern: "100",
+    },
+    {
+      rule: (x, y) => ((x * y) % 2) + ((x * y) % 3) === 0,
+      matrix: [],
+      formatBitPattern: "101",
+    },
+    {
+      rule: (x, y) => (((x * y) % 2) + ((x * y) % 3)) % 2 === 0,
+      matrix: [],
+      formatBitPattern: "110",
+    },
+    {
+      rule: (x, y) => (((x + y) % 2) + ((x + y) % 3)) % 2 === 0,
+      matrix: [],
+      formatBitPattern: "111",
+    },
+  ] as Mask[],
+  initializeMasks(): void {
+    // Each mask initially is a copy of the current state of the matrix.
+    for (let i = 0; i < this.masks.length; i++) {
+      this.masks[i].matrix = [...this.matrix];
+    }
+  },
+  applyMask(x: number, y: number, bit: Bit): void {
+    this.masks.forEach((mask) => {
+      const { rule, matrix } = mask;
+      let b: Bit;
+      if (rule(x, y)) {
+        b = "1";
+      } else {
+        b = "0";
+      }
+      matrix[y][x] = xor(b, bit);
+    });
+  },
+  // The penalty one states that for every row/column, any subsequence
+  // of (5 + i) modules of equal color will add 3 + i points to the penalty
+  penaltyOne(mask: Mask): number {
+    let counter = 0;
+    let currentBit = mask.matrix[0][0];
+    let result = 0;
+    // First, we check horizontally.
+    for (let i = 0; i < mask.matrix.length; i++) {
+      for (let j = 0; j < mask.matrix.length; j++) {
+        // Increase the counter.
+        if (mask.matrix[i][j] === currentBit) {
+          counter += 1;
+        } else {
+          // If not, then we need to check if the broken sequence so far amounts
+          // to at least 5 equal modules.
+          if (counter >= 5) {
+            result += 3 + Math.max(0, counter - 5);
+          }
+          counter = 1;
+          currentBit = mask.matrix[i][j];
+        }
+      }
+      // After finishing a line, we need to check if the result and reset
+      // the counter.
+      if (counter >= 5) {
+        result += 3 + Math.max(0, counter - 5);
+      }
+      counter = 0;
+    }
+    counter = 0;
+    currentBit = mask.matrix[0][0];
+    // Then, we check vertically.
+    for (let i = 0; i < mask.matrix.length; i++) {
+      for (let j = 0; j < mask.matrix.length; j++) {
+        if (mask.matrix[j][i] === currentBit) {
+          counter += 1;
+        } else {
+          if (counter >= 5) {
+            result += 3 + Math.max(0, counter - 5);
+          }
+          counter = 1;
+          currentBit = mask.matrix[j][i];
+        }
+      }
+      if (counter >= 5) {
+        result += 3 + Math.max(0, counter - 5);
+      }
+      counter = 0;
+    }
+    return result;
+  },
+  // The penalty two states that for every 2x2 block of modules of the same color
+  // we add 3 to the penalty score
+  // So the strategy is just to create a 2x2 square and travel around the whole
+  // matrix to check.
+  penaltyTwo(mask: Mask): number {
+    let result = 0;
+    for (let i = 0; i < mask.matrix.length - 1; i++) {
+      for (let j = 0; j < mask.matrix.length - 1; j++) {
+        const topLeft = mask.matrix[i][j];
+        const topRight = mask.matrix[i][j + 1];
+        const bottomLeft = mask.matrix[i + 1][j];
+        const bottomRight = mask.matrix[i + 1][j + 1];
+        if (
+          topLeft === topRight &&
+          topRight === bottomLeft &&
+          bottomLeft === bottomRight
+        )
+          result += 3;
+      }
+    }
+    return result;
+  },
+  // The penalty three states that for every appearance of the following two modules,
+  // add 40 to the penalty:
+  // 10111010000
+  // 00001011101
+  // We will use the same strategy as with the 2nd penalty
+  penaltyThree(mask: Mask): number {
+    let result = 0;
+    const first = "10111010000";
+    const second = "00001011101";
+    // first, we check horizontally
+    for (let i = 0; i < mask.matrix.length; i++) {
+      for (let j = 0; j <= mask.matrix.length - 11; j++) {
+        const slice = mask.matrix[i].slice(j, j + 11).join("");
+        if (slice === first || slice === second) result += 40;
+      }
+    }
+    // then, vertically
+    for (let i = 0; i <= mask.matrix.length - 11; i++) {
+      for (let j = 0; j < mask.matrix.length; j++) {
+        let found = true;
+        for (let k = 0; k < 11; k++) {
+          if (
+            first[k] !== mask.matrix[i + k][j] &&
+            second[k] !== mask.matrix[i + k][j]
+          ) {
+            found = false;
+            break;
+          }
+        }
+        if (found) result += 40;
+      }
+    }
+    return result;
+  },
+  // The fourth penalty says to first calculate the percentage of dark modules
+  // in the symbol, to then calculate how much that differs (absolutely) from 50%.
+  // Then, for each 5% deviation, we add 10 points.
+  penaltyFour(mask: Mask): number {
+    const totalAmountOfModules = mask.matrix.length * mask.matrix.length;
+    let amountDarkModules = 0; // amount of modules equal to 1
+    for (let i = 0; i < mask.matrix.length; i++) {
+      for (let j = 0; j < mask.matrix.length; j++) {
+        if (mask.matrix[i][j] === "1") amountDarkModules += 1;
+      }
+    }
+    const percentageOfDarkModules = Math.floor(
+      amountDarkModules / totalAmountOfModules
+    );
+    return Math.floor(Math.abs(percentageOfDarkModules - 50) / 5) * 10;
+  },
+  calculatePenalties(mask: Mask): number {
+    return (
+      this.penaltyOne(mask) +
+      this.penaltyTwo(mask) +
+      this.penaltyThree(mask) +
+      this.penaltyFour(mask)
+    );
+  },
+  mountQRCodeMatrix(message: string, version: number): string[][] {
     // First, we need to know the total size of the qr code symbol.
     const l = Version.length(version);
     // Initialize the empty matrix.
@@ -32,8 +222,19 @@ const MounterObj = {
     this.walker = Walker.walk(this.matrix);
     this.placeFunctionPatterns(version);
     this.reserveInfoModules(version);
-    Masker.initializeMasks(this.matrix);
+    this.initializeMasks();
     this.placeMessage(message, version);
+    // after placing the message and generating each mask, we
+    // need to pick the best one.
+    const results: Array<{ mask: Mask; result: number }> = this.masks.map(
+      (mask) => ({
+        mask,
+        result: this.calculatePenalties(mask),
+      })
+    );
+    results.sort((a, b) => a.result - b.result);
+    const bestMask = results[0].mask;
+    // Now we have to place the format and version information
     return this.matrix;
   },
   placeFunctionPatterns(version: number): void {
@@ -311,7 +512,7 @@ const MounterObj = {
         // We do this now because it's the best time to do so:
         // the masks should only be applied to the data bits, not function patterns
         // nor info/format modules.
-        Masker.applyMask(x, y, message[amountModulesPlaced] as Bit);
+        this.applyMask(x, y, message[amountModulesPlaced] as Bit);
         amountModulesPlaced += 1;
       }
       // On both possible scenarios, we then move left to number 2
@@ -319,7 +520,7 @@ const MounterObj = {
       x -= 1;
       if (this.matrix[y][x] === "" && amountModulesPlaced < message.length) {
         this.matrix[y][x] = message[amountModulesPlaced];
-        Masker.applyMask(x, y, message[amountModulesPlaced] as Bit);
+        this.applyMask(x, y, message[amountModulesPlaced] as Bit);
         amountModulesPlaced += 1;
       }
       // To go to number 3, we need to make a "jump".
