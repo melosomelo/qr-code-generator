@@ -1,12 +1,12 @@
-import type { ReedSolomon } from "../../types";
+import type { ECB, ErrorCorrectionDetectionLevel } from "../../types";
 import Polynomial from "./polynomial";
 import GF256 from "./gf256";
 import Version from "../versions";
 import toDecimal from "../../util/toDecimal";
 import toBinaryString from "../../util/toBinaryString";
 
-const RS: ReedSolomon = {
-  getGeneratorPolynomial(n) {
+const RS = {
+  getGeneratorPolynomial(n: number): Polynomial {
     let result = new Polynomial(0, [1]);
     for (let i = 0; i < n; i++) {
       result = Polynomial.multiply(
@@ -16,7 +16,11 @@ const RS: ReedSolomon = {
     }
     return result;
   },
-  generateBlocks(codewords, version, ecLevel) {
+  generateBlocks(
+    codewords: string[],
+    version: number,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ): ECB[] {
     // First, we transform the codewords into numbers.
     const numberedCodewords = codewords.map((codeword) => toDecimal(codeword));
     // The generation of error codewords will be done separately for each group.
@@ -51,7 +55,7 @@ const RS: ReedSolomon = {
     });
   },
   // Calculates error correction codewords for a specific message.
-  calculateEcCodewords(message, generatorDegree) {
+  calculateEcCodewords(message: number[], generatorDegree: number): number[] {
     const generatorPolynomial = this.getGeneratorPolynomial(generatorDegree);
     // The specification states that the message polynomial must be multiplied
     // by x^(amount ec codewords)

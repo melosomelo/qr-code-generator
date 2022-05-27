@@ -1,22 +1,8 @@
-import type { Mask } from "../types";
-
-interface MaskerType {
-  masks: Mask[];
-  initializeMasks: (m: string[][]) => void;
-  applyMask: (x: number, y: number, bit: "0" | "1") => void;
-  flipBit: (bit: "0" | "1") => "0" | "1";
-  xor: (x: "0" | "1", y: "0" | "1") => "0" | "1";
-  calculatePenalties: (mask: Mask) => number;
-  penaltyOne: (mask: Mask) => number;
-  penaltyTwo: (mask: Mask) => number;
-  penaltyThree: (mask: Mask) => number;
-  penaltyFour: (mask: Mask) => number;
-  calculateBestMask: () => Mask;
-}
+import type { Mask, Bit } from "../types";
 
 // Object responsible applying masks to the original message matrix
 // and applying masks and determining the best result
-const Masker: MaskerType = {
+const Masker = {
   masks: [
     {
       rule: (x, y) => (x + y) % 2 === 0,
@@ -58,7 +44,7 @@ const Masker: MaskerType = {
       matrix: [],
       formatBitPattern: "111",
     },
-  ],
+  ] as Mask[],
   // Copying the message matrix after placing the
   // function patterns and reserving the info modules .
   initializeMasks(messageMatrix: string[][]): void {
@@ -66,18 +52,18 @@ const Masker: MaskerType = {
       this.masks[i].matrix = [...messageMatrix];
     }
   },
-  xor(x, y) {
+  xor(x: Bit, y: Bit): Bit {
     if (x === "0") return y;
     else return this.flipBit(y);
   },
-  flipBit(bit) {
+  flipBit(bit: Bit): Bit {
     if (bit === "0") return "1";
     return "0";
   },
-  applyMask(x, y, bit) {
+  applyMask(x: number, y: number, bit: Bit): void {
     this.masks.forEach((mask) => {
       const { rule, matrix } = mask;
-      let b: "0" | "1";
+      let b: Bit;
       if (rule(x, y)) {
         b = "1";
       } else {
@@ -88,7 +74,7 @@ const Masker: MaskerType = {
   },
   // The penalty one states that for every row/column, any subsequence
   // of (5 + i) modules of equal color will add 3 + i points to the penalty
-  penaltyOne(mask) {
+  penaltyOne(mask: Mask): number {
     let counter = 0;
     let currentBit = mask.matrix[0][0];
     let result = 0;
@@ -141,7 +127,7 @@ const Masker: MaskerType = {
   // we add 3 to the penalty score
   // So the strategy is just to create a 2x2 square and travel around the whole
   // matrix to check.
-  penaltyTwo(mask) {
+  penaltyTwo(mask: Mask): number {
     let result = 0;
     for (let i = 0; i < mask.matrix.length - 1; i++) {
       for (let j = 0; j < mask.matrix.length - 1; j++) {
@@ -164,7 +150,7 @@ const Masker: MaskerType = {
   // 10111010000
   // 00001011101
   // We will use the same strategy as with the 2nd penalty
-  penaltyThree(mask) {
+  penaltyThree(mask: Mask): number {
     let result = 0;
     const first = "10111010000";
     const second = "00001011101";
@@ -196,7 +182,7 @@ const Masker: MaskerType = {
   // The fourth penalty says to first calculate the percentage of dark modules
   // in the symbol, to then calculate how much that differs (absolutely) from 50%.
   // Then, for each 5% deviation, we add 10 points.
-  penaltyFour(mask) {
+  penaltyFour(mask: Mask): number {
     const totalAmountOfModules = mask.matrix.length * mask.matrix.length;
     let amountDarkModules = 0; // amount of modules equal to 1
     for (let i = 0; i < mask.matrix.length; i++) {
@@ -209,7 +195,7 @@ const Masker: MaskerType = {
     );
     return Math.floor(Math.abs(percentageOfDarkModules - 50) / 5) * 10;
   },
-  calculatePenalties(mask) {
+  calculatePenalties(mask: Mask): number {
     return (
       this.penaltyOne(mask) +
       this.penaltyTwo(mask) +
@@ -217,7 +203,7 @@ const Masker: MaskerType = {
       this.penaltyFour(mask)
     );
   },
-  calculateBestMask() {
+  calculateBestMask(): Mask {
     const results: Array<{ mask: Mask; result: number }> = [];
     this.masks.forEach((mask) => {
       results.push({

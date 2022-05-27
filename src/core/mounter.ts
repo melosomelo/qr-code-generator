@@ -1,11 +1,7 @@
-import type {
-  Mounter,
-  ErrorCorrectionDetectionLevel as EcLevel,
-} from "../types";
+import type { Direction, Bit } from "../types";
 import Version from "./versions";
 import Walker from "./walker";
 import Masker from "./masker";
-import Polynomial from "./math/polynomial";
 
 // Responsible for receiving the final message string (data + ec codewords)
 // and mounting the matrix.
@@ -22,16 +18,10 @@ function printMatrix(matrix: string[][]): void {
 }
 */
 
-const errorCorrectionCodeIndicators: { [k in EcLevel]: string } = {
-  L: "01",
-  M: "00",
-  Q: "11",
-  H: "10",
-};
-const MounterObj: Mounter = {
-  matrix: [],
+const MounterObj = {
+  matrix: [] as string[][],
   walker: new Walker(),
-  mountMessageMatrix(message, version) {
+  mountMessageMatrix(message: string, version: number): string[][] {
     // First, we need to know the total size of the qr code symbol.
     const l = Version.length(version);
     // Initialize the empty matrix.
@@ -46,7 +36,7 @@ const MounterObj: Mounter = {
     this.placeMessage(message, version);
     return this.matrix;
   },
-  placeFunctionPatterns(version) {
+  placeFunctionPatterns(version: number): void {
     this.placeFinderPatterns();
     this.placeSeparators();
     this.placeTimingPatterns();
@@ -55,7 +45,7 @@ const MounterObj: Mounter = {
   // The finder patterns are located on the top left, top right and bottom left of the QR Code.
   // They are composed of three concentric squares, with the first being a 7x7 dark square,
   // the second one being a 5x5 white square and the third being a 3x3 black square.
-  placeFinderPattern(x, y) {
+  placeFinderPattern(x: number, y: number): void {
     this.walker.startingAt(x, y).move([
       {
         fillFirst: true,
@@ -127,7 +117,7 @@ const MounterObj: Mounter = {
     ]);
     this.walker.fill(x + 3, y + 3, "1");
   },
-  placeFinderPatterns() {
+  placeFinderPatterns(): void {
     const l = this.matrix.length - 1;
     // top left one
     this.placeFinderPattern(0, 0);
@@ -138,13 +128,18 @@ const MounterObj: Mounter = {
   },
   // Separators separate a finder pattern from the rest of the qr code.
   // They are an 1 module wide and have an L shape.
-  placeSeparator(x, y, firstDir, secondDir) {
+  placeSeparator(
+    x: number,
+    y: number,
+    firstDir: Direction,
+    secondDir: Direction
+  ): void {
     this.walker.startingAt(x, y).move([
       { fillFirst: true, fillWith: "0", times: 7, direction: firstDir },
       { fillWith: "0", times: 7, direction: secondDir },
     ]);
   },
-  placeSeparators() {
+  placeSeparators(): void {
     const l = this.matrix.length - 1;
     // top left one
     this.placeSeparator(7, 0, "DOWN", "LEFT");
@@ -155,7 +150,7 @@ const MounterObj: Mounter = {
   },
   // Timing patterns are one module-wide pattern of alternating
   // black and white modules that connect the adjacent pairs of finder patterns.
-  placeTimingPattern(x, y, direction) {
+  placeTimingPattern(x: number, y: number, direction: "RIGHT" | "DOWN"): void {
     const l = this.matrix.length;
     const lengthTimingPattern = l - 8 * 2;
     for (let i = 0; i < lengthTimingPattern; i++) {
@@ -168,14 +163,14 @@ const MounterObj: Mounter = {
       else x += 1;
     }
   },
-  placeTimingPatterns() {
+  placeTimingPatterns(): void {
     this.placeTimingPattern(8, 6, "RIGHT");
     this.placeTimingPattern(6, 8, "DOWN");
   },
   // Alignment patterns are composed of three concentric squares.
   // The first one is a 5x5 black square. The second one is a 3x3  white square
   // and the last one is a single black module.
-  placeAlignmentPattern(centerX, centerY) {
+  placeAlignmentPattern(centerX: number, centerY: number): void {
     // First, we need to check if they're not intersecting any of the three finder patterns.
     const l = this.matrix.length - 1;
     const isIntersectingTopLeftFinderPattern =
@@ -240,7 +235,7 @@ const MounterObj: Mounter = {
       },
     ]);
   },
-  placeAlignmentPatterns(version) {
+  placeAlignmentPatterns(version: number): void {
     const possibleCenters =
       Version.versions[version - 1].alignmentPatternCenters;
     for (let i = 0; i < possibleCenters.length; i++) {
@@ -252,7 +247,7 @@ const MounterObj: Mounter = {
   // The info module placement happens after the placement of the message.
   // Because of this, it's necessary to reserve these modules, so that
   // when the message is being placed, it doesn't invade these spaces.
-  reserveInfoModules(version) {
+  reserveInfoModules(version: number): void {
     const l = this.matrix.length - 1;
     if (Version.amountVersionInfoModules(version) > 0) {
       // place the version info modules
@@ -285,7 +280,7 @@ const MounterObj: Mounter = {
       },
     ]);
   },
-  placeMessage(message, version) {
+  placeMessage(message: string, version: number): void {
     /*
       The movement of placing the message on the QR Code Matrix
       depends on the current direction (upwards or downwards).
@@ -316,7 +311,7 @@ const MounterObj: Mounter = {
         // We do this now because it's the best time to do so:
         // the masks should only be applied to the data bits, not function patterns
         // nor info/format modules.
-        Masker.applyMask(x, y, message[amountModulesPlaced] as "0" | "1");
+        Masker.applyMask(x, y, message[amountModulesPlaced] as Bit);
         amountModulesPlaced += 1;
       }
       // On both possible scenarios, we then move left to number 2
@@ -324,7 +319,7 @@ const MounterObj: Mounter = {
       x -= 1;
       if (this.matrix[y][x] === "" && amountModulesPlaced < message.length) {
         this.matrix[y][x] = message[amountModulesPlaced];
-        Masker.applyMask(x, y, message[amountModulesPlaced] as "0" | "1");
+        Masker.applyMask(x, y, message[amountModulesPlaced] as Bit);
         amountModulesPlaced += 1;
       }
       // To go to number 3, we need to make a "jump".
@@ -356,13 +351,6 @@ const MounterObj: Mounter = {
       }
     }
   },
-  placeFormatAndVersionInfo(mask, ecLevel) {
-    this.placeFormatInfo(mask, ecLevel);
-  },
-  // The format info is made of a 15 bit sequence, with the 5 initial ones
-  // being comprised of the ecLevel indicator and the mask indicator.
-  // Then, we must calculate 10 error correction bits using the (15,5) BCH code.
-  placeFormatInfo(mask, ecLevel) {},
 };
 
 export default MounterObj;

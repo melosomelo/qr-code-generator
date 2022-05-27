@@ -1,4 +1,4 @@
-import type { MoveInstruction } from "../types";
+import type { MoveInstruction, Bit } from "../types";
 
 // Class that provides some abstractions to the process of iterating
 // through the QR Code matrix and filling its modules.
@@ -43,7 +43,7 @@ export default class Walker {
     this.y += 1;
   }
 
-  public fill(x: number, y: number, fill: "0" | "1"): void {
+  public fill(x: number, y: number, fill: Bit): void {
     this.matrix[y][x] = fill;
   }
 
@@ -52,7 +52,7 @@ export default class Walker {
     topLeftY: number,
     width: number,
     height: number,
-    fillWith: "0" | "1"
+    fillWith: Bit
   ): void {
     for (let i = 0; i < height; i++) {
       for (let j = 0; j < width; j++) {
@@ -69,7 +69,7 @@ export default class Walker {
       if (instruction.fillWith !== "0" && instruction.fillWith !== "1") {
         console.log("Coming from message!");
       } else {
-        const fill: "0" | "1" = instruction.fillWith;
+        const fill: Bit = instruction.fillWith;
         if (instruction.fillFirst) {
           this.matrix[this.y][this.x] = fill;
         }

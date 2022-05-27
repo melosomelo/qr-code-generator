@@ -1,21 +1,8 @@
-import Polynomial from "./core/math/polynomial";
 import QRCode from "./core/qrcode";
-import Walker from "./core/walker";
-
-export interface GF256 {
-  add: (a: number, b: number) => number;
-  multiply: (a: number, b: number) => number;
-  divide: (a: number, b: number) => number;
-  pow: (a: number, b: number) => number;
-  log: {
-    [key: number]: number;
-  };
-  antilog: {
-    [key: number]: number;
-  };
-}
 
 export type ErrorCorrectionDetectionLevel = "L" | "M" | "Q" | "H";
+
+export type Bit = "0" | "1";
 
 export type EncodingMode = "numeric" | "alphanumeric";
 
@@ -53,7 +40,7 @@ export interface ECB {
   ecCodewords: string[];
 }
 
-interface VersionInfo {
+export interface VersionInfo {
   version: number;
   ecInfo: {
     [key in ErrorCorrectionDetectionLevel]: {
@@ -61,87 +48,6 @@ interface VersionInfo {
     };
   };
   alignmentPatternCenters: number[];
-}
-
-export interface Version {
-  versions: VersionInfo[];
-  willFit: (
-    dataLength: number,
-    version: number,
-    mode: EncodingMode,
-    ecLevel: ErrorCorrectionDetectionLevel
-  ) => boolean;
-  characterCountIndicatorLength: {
-    [m in EncodingMode]: [number, number, number];
-  };
-  getCharacterCountIndicatorLength: (
-    version: number,
-    mode: EncodingMode
-  ) => number;
-  amountInfoModules: (version: number) => number;
-  amountVersionInfoModules: (version: number) => number;
-  amountFormatInfoModules: (version: number) => number;
-  amountFunctionPatternModules: (version: number) => number;
-  amountDataModules: (version: number) => number;
-  amountRealDataModules: (
-    version: number,
-    mode: EncodingMode,
-    ecLevel: ErrorCorrectionDetectionLevel
-  ) => number;
-  amountTotalModules: (version: number) => number;
-  amountAlignmentPatterns: (version: number) => number;
-  amountAlignmentPatternsIntersectingTimingPatterns: (
-    version: number
-  ) => number;
-  amountErrorCorrectionModules: (
-    version: number,
-    ecLevel: ErrorCorrectionDetectionLevel
-  ) => number;
-  length: (version: number) => number;
-}
-
-export interface ReedSolomon {
-  getGeneratorPolynomial: (degree: number) => Polynomial;
-  generateBlocks: (
-    codewords: string[],
-    version: number,
-    ecLevel: ErrorCorrectionDetectionLevel
-  ) => ECB[];
-  calculateEcCodewords: (
-    message: number[],
-    generatorDegree: number
-  ) => number[];
-}
-
-export interface Mounter {
-  mountMessageMatrix: (message: string, version: number) => string[][];
-  placeFunctionPatterns: (version: number) => void;
-  placeFinderPattern: (x: number, y: number) => void;
-  placeFinderPatterns: () => void;
-  placeSeparator: (
-    x: number,
-    y: number,
-    firstDir: Direction,
-    secondDir: Direction
-  ) => void;
-  placeSeparators: () => void;
-  placeTimingPattern: (
-    x: number,
-    y: number,
-    direction: "RIGHT" | "DOWN"
-  ) => void;
-  placeTimingPatterns: () => void;
-  placeAlignmentPatterns: (version: number) => void;
-  placeAlignmentPattern: (centerX: number, centerY: number) => void;
-  reserveInfoModules: (version: number) => void;
-  placeMessage: (message: string, version: number) => void;
-  placeFormatAndVersionInfo: (
-    mask: Mask,
-    ecLevel: ErrorCorrectionDetectionLevel
-  ) => void;
-  placeFormatInfo: (mask: Mask, ecLevel: ErrorCorrectionDetectionLevel) => void;
-  walker: Walker;
-  matrix: string[][];
 }
 
 export interface MoveInstruction {
@@ -152,7 +58,7 @@ export interface MoveInstruction {
   fillFirst?: boolean;
   // This could mean: fill the region with all 0s, all 1s, or with the data
   // from a bigger string (the message or part of it).
-  fillWith: "0" | "1" | string;
+  fillWith: Bit | string;
 }
 
 export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";

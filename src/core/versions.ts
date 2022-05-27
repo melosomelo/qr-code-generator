@@ -1,7 +1,12 @@
 // A global object that stores data about different QR Code versions
 // exposes some utility methods
 
-import type { Version, ECBInfo } from "../types";
+import type {
+  ECBInfo,
+  VersionInfo,
+  EncodingMode,
+  ErrorCorrectionDetectionLevel,
+} from "../types";
 
 function makeECB(totalCodewords: number, dataCodewords: number): ECBInfo {
   return {
@@ -22,7 +27,7 @@ function makeECBs(
   return result;
 }
 
-const VersionObj: Version = {
+const Version = {
   versions: [
     {
       version: 1,
@@ -1010,15 +1015,24 @@ const VersionObj: Version = {
       },
       alignmentPatternCenters: [6, 30, 58, 86, 114, 142, 170],
     },
-  ],
-  willFit(dataLength, version, mode, ecLevel) {
+  ] as VersionInfo[],
+  willFit(
+    dataLength: number,
+    version: number,
+    mode: EncodingMode,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ) {
     return this.amountRealDataModules(version, mode, ecLevel) >= dataLength;
   },
   // When talking about data modules, the specification doesn't distinguish between
   // modules used by the mode indicator, character count indicator, error correction codewords
   // and remainder bits. So, "real" data modules would be those ones that are
   // available for use by the encoded data.
-  amountRealDataModules(version: number, mode, ecLevel) {
+  amountRealDataModules(
+    version: number,
+    mode: EncodingMode,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ): number {
     // Mode indicator is always 4 bits for QR Codes.
     const modeIndicatorLength = 4;
     const characterCountIndicatorLength = this.getCharacterCountIndicatorLength(
@@ -1042,20 +1056,26 @@ const VersionObj: Version = {
     alphanumeric: [9, 11, 13],
     numeric: [10, 12, 14],
   },
-  amountErrorCorrectionModules(version, ecLevel) {
+  amountErrorCorrectionModules(
+    version: number,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ): number {
     return this.versions[version - 1].ecInfo[ecLevel].ECBs.reduce<number>(
       (prev, current) =>
         prev + (current.totalCodewords - current.dataCodewords) * 8,
       0
     );
   },
-  getCharacterCountIndicatorLength(version, mode) {
+  getCharacterCountIndicatorLength(
+    version: number,
+    mode: EncodingMode
+  ): number {
     const possibleValues = this.characterCountIndicatorLength[mode];
     if (version >= 1 && version <= 9) return possibleValues[0];
     else if (version >= 10 && version <= 26) return possibleValues[1];
     return possibleValues[2];
   },
-  amountFunctionPatternModules(version) {
+  amountFunctionPatternModules(version: number): number {
     const l = this.length(version);
     const finderPatternModules = 7 * 7 * 3;
     const separatorModules = 15 * 3;
@@ -1072,11 +1092,11 @@ const VersionObj: Version = {
       alignmentPatternModules
     );
   },
-  amountAlignmentPatternsIntersectingTimingPatterns(version) {
+  amountAlignmentPatternsIntersectingTimingPatterns(version: number): number {
     if (version === 1) return 0;
     return Math.floor(version / 7) * 2;
   },
-  amountDataModules(version) {
+  amountDataModules(version: number): number {
     return (
       this.amountTotalModules(version) -
       (this.amountFunctionPatternModules(version) +
@@ -1084,7 +1104,7 @@ const VersionObj: Version = {
     );
   },
   // Find a way to improve this later.
-  amountAlignmentPatterns(version) {
+  amountAlignmentPatterns(version: number): number {
     if (version === 1) return 0;
     if (version >= 2 && version < 7) return 1;
     if (version >= 7 && version < 14) return 6;
@@ -1093,28 +1113,25 @@ const VersionObj: Version = {
     if (version >= 28 && version < 35) return 33;
     return 46;
   },
-  amountInfoModules(version) {
+  amountInfoModules(version: number): number {
     return (
-      this.amountFormatInfoModules(version) +
-      this.amountVersionInfoModules(version)
+      this.amountFormatInfoModules() + this.amountVersionInfoModules(version)
     );
   },
-  amountFormatInfoModules() {
+  amountFormatInfoModules(): number {
     return 31;
   },
-  amountVersionInfoModules(version) {
+  amountVersionInfoModules(version: number): number {
     if (version >= 1 && version <= 6) return 0;
     return 36;
   },
-  amountTotalModules(version) {
+  amountTotalModules(version: number): number {
     const l = this.length(version);
     return l * l;
   },
-  length(version) {
+  length(version: number): number {
     return 21 + 4 * (version - 1);
   },
 };
 
-VersionObj.willFit(372, 4, "alphanumeric", "Q");
-
-export default VersionObj;
+export default Version;
