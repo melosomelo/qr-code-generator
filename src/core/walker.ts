@@ -64,10 +64,29 @@ export default class Walker {
   public move(instructions: MoveInstruction[]): void {
     for (let i = 0; i < instructions.length; i++) {
       const instruction = instructions[i];
-      // This is the case where fillWith comes from the message.
-      // I'll deal with it later.
       if (instruction.fillWith !== "0" && instruction.fillWith !== "1") {
-        console.log("Coming from message!");
+        const message = instruction.fillWith;
+        let characterIndex = 0;
+        this.matrix[this.y][this.x] = message[characterIndex];
+        characterIndex += 1;
+        for (let j = 0; j < instruction.times; j++) {
+          switch (instruction.direction) {
+            case "DOWN":
+              this.moveDown();
+              break;
+            case "UP":
+              this.moveUp();
+              break;
+            case "LEFT":
+              this.moveLeft();
+              break;
+            case "RIGHT":
+              this.moveRight();
+              break;
+          }
+          this.matrix[this.y][this.x] = message[characterIndex];
+          characterIndex += 1;
+        }
       } else {
         const fill: Bit = instruction.fillWith;
         if (instruction.fillFirst) {

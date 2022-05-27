@@ -8,6 +8,8 @@ import Version from "./versions";
 import Walker from "./walker";
 import xor from "../util/xor";
 import EC_INDICATORS from "../util/ecLevelIndicators";
+import Polynomial from "./math/polynomial";
+import padBinaryString from "../util/padBinaryString";
 
 /*
 function printMatrix(matrix: string[][]): void {
@@ -71,11 +73,82 @@ const MounterObj = {
   // Format info is made of 15 bits: 5 of which are data bits and 10 are ec bits.
   // The first two bits are indicators of the ec level chosen, and the next 3
   // are indicators of which mask was chosen.
-  placeFormatInfo(mask: Mask, ecLevel: ErrorCorrectionDetectionLevel): void {
-    const initialBitStream = `${EC_INDICATORS[ecLevel]}${mask.formatBitPattern}`
-      .split("")
-      .map((b) => parseInt(b, 10));
-    console.log(initialBitStream);
+  placeFormatInfo(
+    mask: Mask,
+    version: number,
+    ecLevel: ErrorCorrectionDetectionLevel
+  ): void {
+    const initialBitStream = `${EC_INDICATORS[ecLevel]}${mask.formatBitPattern}`;
+    const generatorPolynomial = new Polynomial(
+      10,
+      [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1]
+    );
+    let messageCoefficients;
+    const indexFirstNonZeroBit = initialBitStream.indexOf("1");
+    if (indexFirstNonZeroBit === -1) {
+      messageCoefficients = [0];
+    } else {
+      messageCoefficients = initialBitStream
+        .slice(indexFirstNonZeroBit)
+        .split("")
+        .map((b) => parseInt(b, 10));
+    }
+    const messagePolynomial = Polynomial.multiply(
+      new Polynomial(10, [1, ...new Array(10).fill(0)]),
+      new Polynomial(messageCoefficients.length - 1, messageCoefficients)
+    );
+    const { remainder } = Polynomial.longDivide(
+      messagePolynomial,
+      generatorPolynomial
+    );
+    const completeBitStream = padBinaryString(
+      `${initialBitStream}${remainder.coefficients.join("")}`,
+      15
+    );
+    let finalBitStream = "";
+    const xorMask = "101010000010010";
+    for (let i = 0; i < 15; i++) {
+      finalBitStream += xor(completeBitStream[i] as Bit, xorMask[i] as Bit);
+    }
+    // now we just need to place the info
+    const walker = Walker.walk(mask.matrix);
+    const l = Version.length(version);
+    walker.startingAt(l - 1, 8).move([
+      {
+        fillWith: finalBitStream.slice(0, 8),
+        direction: "LEFT",
+        times: 7,
+      },
+    ]);
+    walker.startingAt(8, l - 7).move([
+      {
+        fillWith: finalBitStream.slice(8),
+        direction: "DOWN",
+        times: 6,
+      },
+    ]);
+    walker.startingAt(8, 0).move([
+      {
+        fillWith: finalBitStream.slice(0, 6),
+        direction: "DOWN",
+        times: 5,
+      },
+    ]);
+    walker.startingAt(8, 7).move([
+      {
+        fillWith: finalBitStream.slice(6, 8),
+        direction: "DOWN",
+        times: 1,
+      },
+    ]);
+    walker.fill(7, 8, finalBitStream[8] as Bit);
+    walker.startingAt(5, 8).move([
+      {
+        fillWith: finalBitStream.slice(9),
+        direction: "LEFT",
+        times: 5,
+      },
+    ]);
   },
   initializeMasks(): void {
     // Each mask initially is a copy of the current state of the matrix.
@@ -256,9 +329,9 @@ const MounterObj = {
     );
     results.sort((a, b) => a.result - b.result);
     const bestMask = results[0].mask;
-    this.placeFormatInfo(bestMask, ecLevel);
+    this.placeFormatInfo(bestMask, version, ecLevel);
     // Now we have to place the format and version information
-    return this.matrix;
+    return bestMask.matrix;
   },
   placeFunctionPatterns(version: number): void {
     this.placeFinderPatterns();
